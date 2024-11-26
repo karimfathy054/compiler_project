@@ -115,37 +115,51 @@ class RulesReader
         }
         // rules = processed_rules;
     }
-    // TODO: implement this function correctly
     int precedence(char c){
         if(c == '|'){
             return 1;
-        } else if(c == '*' || c == '+'){
+        }else if(c == '~'){
             return 2;
+        }
+         else if(c == '*' || c == '+'){
+            return 3;
         } else {
             return -1;
         }
     }
+    // TODO: implement this function correctly
     string convert_to_postfix(string rule){
         // convert the rule to postfix
         // precedence: | < concat < +,*
-
+        cout << "rule: " << rule << endl;
         stack<char> s;
         string postfix = "";
+        bool concat = false;
         for(int i = 0; i < rule.length(); i++){
             if(rule[i] == '('){
+                if(concat){
+                    while(!s.empty() && precedence(s.top()) >= precedence('~')){
+                        postfix += s.top();
+                        s.pop();
+                    }
+                    s.push('~');
+                }
                 s.push(rule[i]);
+                concat = false;
             } else if(rule[i] == ')'){
                 while(s.top() != '('){
                     postfix += s.top();
                     s.pop();
                 }
                 s.pop();
+                concat = true;
             } else if(rule[i] == '|'){
                 while(!s.empty() && precedence(s.top()) >= precedence(rule[i])){
                     postfix += s.top();
                     s.pop();
                 }
                 s.push(rule[i]);
+                concat = false;
             }else if (rule[i] == '*' || rule[i] == '+'){
                 s.push(rule[i]);
             }
@@ -153,7 +167,18 @@ class RulesReader
             // ! what to do with '\'
             // ? relop: \=\= | !\= | > | >\= | < | <\=
             else {
+                if(rule[i] == '\\'){
+                    i++;
+                }
                 postfix += rule[i];
+                if(concat){
+                    while(!s.empty() && precedence(s.top()) >= precedence('~')){
+                        postfix += s.top();
+                        s.pop();
+                    }
+                    s.push('~');
+                }
+                concat = true;
             }
         }
         while(!s.empty()){
@@ -169,8 +194,13 @@ int main(){
     stack<char> s;
     s.top();
     RulesReader r("/home/karim/compiler_project/lexical rules.txt");
-    cout<< r.convert_to_postfix("abc|klm(d|f|g)+")<<endl; //abcklmdf|g|+|
     r.process_definitions();
     r.process_rules();
+
+    cout << "ajdgjasbjhb: "<<r.rules[2].second << endl;
+    // cout<< r.convert_to_postfix("abc|klm(d|f|g)+")<<endl; //abcklmdf|g|+| output (fixed)
+    string x = r.convert_to_postfix(r.rules[2].second);
+    cout << x << endl;
+    cout << (x == "==~!=~|>|>=~|<|<=~|") << endl;
     return 0;
 }
