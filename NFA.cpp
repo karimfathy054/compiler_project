@@ -6,10 +6,14 @@ class NFA{
         State* start_state;
         State* final_state;
     public:
+        
         NFA(char c){
             start_state = new State(state_id_counter++);
             final_state = new State(state_id_counter++);
             start_state->add_transition(c, final_state);
+        }
+        static void reset_state_id_counter(){
+            state_id_counter = 0;
         }
         void concatenate(NFA* nfa){
             final_state->add_e_closure(nfa->start_state);
@@ -37,3 +41,4 @@ class NFA{
         }
 
 };
+int NFA::state_id_counter = 0;
