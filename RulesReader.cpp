@@ -6,6 +6,7 @@
 #include <stack>
 #include <sstream>
 #include <iostream>
+#define CONCAT '~'
 using namespace std;
 class RulesReader
 {
@@ -95,7 +96,7 @@ private:
             {
                 if (concat)
                 {
-                    while (!s.empty() && precedence(s.top()) >= precedence('~'))
+                    while (!s.empty() && precedence(s.top()) > precedence('~'))
                     {
                         postfix += s.top();
                         s.pop();
@@ -117,7 +118,7 @@ private:
             }
             else if (rule[i] == '|')
             {
-                while (!s.empty() && precedence(s.top()) >= precedence(rule[i]))
+                while (!s.empty() && precedence(s.top()) > precedence(rule[i]))
                 {
                     postfix += s.top();
                     s.pop();
@@ -133,12 +134,12 @@ private:
             {
                 if (rule[i] == '\\')
                 {
-                    i++;
+                    postfix += rule[i++];
                 }
                 postfix += rule[i];
                 if (concat)
                 {
-                    while (!s.empty() && precedence(s.top()) >= precedence('~'))
+                    while (!s.empty() && precedence(s.top()) > precedence('~'))
                     {
                         postfix += s.top();
                         s.pop();
