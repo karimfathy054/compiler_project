@@ -236,7 +236,7 @@ int main()
     // string x = r.convert_to_postfix(r.rules[2].second);
     // cout << x << endl;
     // cout << (x == "==~!=~|>|>=~|<|<=~|") << endl;
-    RulesReader r("/home/karim/compiler_project/lexical rules.txt");
+    RulesReader r("../lexical rules.txt");
     for (auto &p : r.rules)
     {
         cout << p.first << ": " << p.second << endl;
