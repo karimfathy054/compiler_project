@@ -7,7 +7,7 @@
 #include "NFA.cpp"
 
 using namespace std;
-
+int NFA::state_id_counter = 0;
 class NFAGenerator{
 public:
     NFAGenerator(){}
@@ -36,7 +36,7 @@ public:
                         s.pop();
                         NFA* second_nfa = s.top();
                         s.pop();
-                        s.push(NFA::concatenate(first_nfa, second_nfa));
+                        s.push(NFA::concatenate(second_nfa,first_nfa));//the concatination was in reverse order 
                     }else if(c == '*') {
                         NFA* nfa = s.top();
                         s.pop();
@@ -58,7 +58,7 @@ public:
             s.top()->mark_accepting(name);
             result_nfas.push_back(s.top());
         }
-        return NFA::union_(result_nfas);
+        return NFA::union_front(result_nfas); //there was an extra state at the end that may cause problems
     }
     void print_nfa(NFA* nfa){
         queue<State*> q;
@@ -101,6 +101,7 @@ private:
 
 int main(){
     vector<pair<string, string>> rules = {
+        {"ABC","ABC~~"},
         {"ID", "abc||"},
         {"NUM", "0123456789|||||||||"},
         {"OP", "\\+-\\*/|||*"}
