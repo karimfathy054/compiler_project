@@ -9,7 +9,9 @@
 using namespace std;
 int NFA::state_id_counter = 0;
 class NFAGenerator{
+    
 public:
+    vector<State*> final_accepting_states; //for tracking accepting states in the final NFA
     NFAGenerator(){}
     NFA* generateNFA(vector<pair<string, string>> rules){
         vector<NFA*> result_nfas;
@@ -56,8 +58,10 @@ public:
             }
             if(s.size() != 1) throw runtime_error("Invalid Regular Expression!! Should have ended with one NFA, but ended with " + to_string(s.size()));
             s.top()->mark_accepting(name);
+            final_accepting_states.push_back(s.top()->get_final_state());
             result_nfas.push_back(s.top());
         }
+
         return NFA::union_front(result_nfas); //there was an extra state at the end that may cause problems
     }
     void print_nfa(NFA* nfa){

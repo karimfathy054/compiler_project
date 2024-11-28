@@ -23,6 +23,9 @@ class NFA{
         State* get_start_state() {
             return start_state;
         }
+        State* get_final_state() {
+            return final_state;
+        }
 
         static void reset_state_id_counter(){
             state_id_counter = 0;
