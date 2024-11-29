@@ -22,6 +22,15 @@ class State{
             state_id = id;
             acc_state_def = "";
         }
+        void combine_states_outputs(State* state){
+            for(auto& transition:state->get_transitions()){
+                for(auto& transition: state->get_transitions()){
+                    if(this->transitions.find(transition.first) != this->transitions.end()){
+                        this->transitions[transition.first] = transition.second;
+                    }
+                }
+            }
+        }
         void add_nfa_state(State* nfa_state){
             nfa_states.insert(nfa_state);
             for(auto &trans: nfa_state->get_transitions()){
@@ -53,6 +62,13 @@ class State{
                 }
                 i++;
             }
+        }
+        set<char> get_transition_symbols(){
+            set<char> symbols;
+            for(auto& transition:transitions){
+                symbols.insert(transition.first);
+            }
+            return symbols;
         }
         set<State*> get_nfa_states(){
             return nfa_states;
