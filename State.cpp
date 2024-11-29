@@ -52,6 +52,13 @@ class State{
                 i++;
             }
         }
+        set<char> get_transition_symbols(){
+            set<char> symbols;
+            for(auto& transition:transitions){
+                symbols.insert(transition.first);
+            }
+            return symbols;
+        }
         set<State*> get_nfa_states(){
             return nfa_states;
         }
