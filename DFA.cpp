@@ -107,7 +107,9 @@ class DFAGenerator{
                 cout << endl;
             }
         }
-        
+        State* get_dfa_start_state(){
+            return start_state;
+        }
 };
 
 

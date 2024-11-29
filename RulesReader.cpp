@@ -156,7 +156,9 @@ private:
         }
         return postfix;
     }
-
+    bool is_input(char c) {
+        return not (c == '|' || c == '*' || c == '+' || c == '(' || c == ')' || c == CONCAT);
+    }
 public:
     vector<string> keywords;
     vector<string> punctuations;
@@ -220,6 +222,43 @@ public:
         }
         process_definitions();
         process_rules();
+    }
+
+    vector<pair<string, string>> get_all_rules()
+    {
+        vector<pair<string, string>> rules(this->rules);
+
+        // add the keywords as rules (ex: int: int~~)
+        for (auto &keyword : keywords)
+        {
+            rules.push_back({ keyword, keyword + string(keyword.size()-1, '~') });
+        }
+
+        for(int i = 0; i < punctuations.size(); i++){
+            rules.push_back({ "p_" + to_string(i), punctuations[i] });
+        }
+        return rules;
+    }
+
+
+    unordered_set<string> get_possible_inputs() {
+        unordered_set<string> possible_inputs;
+        vector<pair<string, string>> rules = get_all_rules();
+        for (int i = 0; i < rules.size(); i++)
+        {
+            string &def = rules[i].second;
+            for (int j = 0; j < def.size(); j++)
+            {
+                if(def[j] == '\\') {
+                    j++;
+                    possible_inputs.insert(string(1, def[j]));
+                }else if (is_input(def[j]))
+                {
+                    possible_inputs.insert(string(1, def[j]));
+                }
+            }
+        }
+        return possible_inputs;
     }
 };
 
