@@ -1,7 +1,6 @@
 /out
 /build
-.vscode/settings.json
-.vscode/tasks.json
+/.vscode
 DFA
 RulesReader
 test

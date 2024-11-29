@@ -71,7 +71,7 @@ private:
         {
             return 1;
         }
-        else if (c == '~')
+        else if (c == CONCAT)
         {
             return 2;
         }
@@ -96,12 +96,12 @@ private:
             {
                 if (concat)
                 {
-                    while (!s.empty() && precedence(s.top()) > precedence('~'))
+                    while (!s.empty() && precedence(s.top()) > precedence(CONCAT))
                     {
                         postfix += s.top();
                         s.pop();
                     }
-                    s.push('~');
+                    s.push(CONCAT);
                 }
                 s.push(rule[i]);
                 concat = false;
@@ -132,20 +132,20 @@ private:
             }
             else
             {
+                if (concat)
+                {
+                    while (!s.empty() && precedence(s.top()) > precedence(CONCAT))
+                    {
+                        postfix += s.top();
+                        s.pop();
+                    }
+                    s.push(CONCAT);
+                }
                 if (rule[i] == '\\')
                 {
                     postfix += rule[i++];
                 }
                 postfix += rule[i];
-                if (concat)
-                {
-                    while (!s.empty() && precedence(s.top()) > precedence('~'))
-                    {
-                        postfix += s.top();
-                        s.pop();
-                    }
-                    s.push('~');
-                }
                 concat = true;
             }
         }
@@ -231,15 +231,15 @@ public:
 //     // r.process_definitions();
 //     // r.process_rules();
 
-//     // cout << "ajdgjasbjhb: " << r.rules[2].second << endl;
-//     // // cout<< r.convert_to_postfix("abc|klm(d|f|g)+")<<endl; //abcklmdf|g|+| output (fixed)
-//     // string x = r.convert_to_postfix(r.rules[2].second);
-//     // cout << x << endl;
-//     // cout << (x == "==~!=~|>|>=~|<|<=~|") << endl;
-//    RulesReader r("lexical rules.txt");
-//    for (auto &p : r.rules)
-//    {
-//        cout << p.first << ": " << p.second << endl;
-//    }
+    // cout << "ajdgjasbjhb: " << r.rules[2].second << endl;
+    // // cout<< r.convert_to_postfix("abc|klm(d|f|g)+")<<endl; //abcklmdf|g|+| output (fixed)
+    // string x = r.convert_to_postfix(r.rules[2].second);
+    // cout << x << endl;
+    // cout << (x == "==~!=~|>|>=~|<|<=~|") << endl;
+//     RulesReader r("test.txt");
+//     for (auto &p : r.rules)
+//     {
+//         cout << p.first << ": " << p.second << endl;
+//     }
 //     return 0;
 // }
