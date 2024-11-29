@@ -223,23 +223,23 @@ public:
     }
 };
 
-int main()
-{
-    // stack<char> s;
-    // s.top();
-    // RulesReader r("/home/karim/compiler_project/lexical rules.txt");
-    // r.process_definitions();
-    // r.process_rules();
+// int main()
+// {
+//     // stack<char> s;
+//     // s.top();
+//     // RulesReader r("/home/karim/compiler_project/lexical rules.txt");
+//     // r.process_definitions();
+//     // r.process_rules();
 
     // cout << "ajdgjasbjhb: " << r.rules[2].second << endl;
     // // cout<< r.convert_to_postfix("abc|klm(d|f|g)+")<<endl; //abcklmdf|g|+| output (fixed)
     // string x = r.convert_to_postfix(r.rules[2].second);
     // cout << x << endl;
     // cout << (x == "==~!=~|>|>=~|<|<=~|") << endl;
-    RulesReader r("test.txt");
-    for (auto &p : r.rules)
-    {
-        cout << p.first << ": " << p.second << endl;
-    }
-    return 0;
-}
+//     RulesReader r("test.txt");
+//     for (auto &p : r.rules)
+//     {
+//         cout << p.first << ": " << p.second << endl;
+//     }
+//     return 0;
+// }
