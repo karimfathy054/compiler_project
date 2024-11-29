@@ -103,15 +103,15 @@ private:
     }
 };
 
-int main(){
-    vector<pair<string, string>> rules = {
-        {"ABC","ABC~~"},
-        {"ID", "abc||"},
-        {"NUM", "0123456789|||||||||"},
-        {"OP", "\\+-\\*/|||*"}
-    };
-    NFAGenerator nfa_gen;
-    NFA* nfa = nfa_gen.generateNFA(rules);
-    nfa_gen.print_nfa(nfa);
-    return 0;
-}
+// int main(){
+//     vector<pair<string, string>> rules = {
+//         {"ABC","ABC~~"},
+//         {"ID", "abc||"},
+//         {"NUM", "0123456789|||||||||"},
+//         {"OP", "\\+-\\*/|||*"}
+//     };
+//     NFAGenerator nfa_gen;
+//     NFA* nfa = nfa_gen.generateNFA(rules);
+//     nfa_gen.print_nfa(nfa);
+//     return 0;
+// }

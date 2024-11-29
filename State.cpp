@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <set>
 using namespace std;
 class State{
     private:
@@ -9,6 +10,7 @@ class State{
         unordered_map<char, vector<State*>> transitions;
         vector<State*> e_closure;
         string name;
+        set<State*> nfa_states;
         /*
             Accepting state definition, is empty if not an accepting state, else contains the name of the token
         */
@@ -17,6 +19,41 @@ class State{
         State(int id){
             state_id = id;
             acc_state_def = "";
+        }
+        void add_nfa_state(State* nfa_state){
+            nfa_states.insert(nfa_state);
+            for(auto &trans: nfa_state->get_transitions()){
+                if(transitions.find(trans.first) != transitions.end()){
+                    transitions[trans.first].insert(transitions[trans.first].end(), trans.second.begin(), trans.second.end());
+                }
+                else{
+                    transitions[trans.first] =  trans.second;
+                }
+            }
+            vector<State*> e_closure = nfa_state->get_e_closure();
+            int i = 0;
+            while(i<e_closure.size()){
+                State* curr_nfa_state = e_closure[i];
+                nfa_states.insert(curr_nfa_state);
+                for(auto &trans: curr_nfa_state->get_transitions()){
+                    if(transitions.find(trans.first) != transitions.end()){
+                        transitions[trans.first].insert(transitions[trans.first].end(), trans.second.begin(), trans.second.end());
+                    }
+                    else{
+                        transitions[trans.first] = trans.second;
+                    }
+                }
+                for(State* e_closure_state : curr_nfa_state->get_e_closure()){
+                    if(nfa_states.find(e_closure_state) == nfa_states.end()) {
+                        nfa_states.insert(e_closure_state);
+                        e_closure.push_back(e_closure_state);
+                    }
+                }
+                i++;
+            }
+        }
+        set<State*> get_nfa_states(){
+            return nfa_states;
         }
         unordered_map<char, vector<State*>> get_transitions(){
             return transitions;
@@ -29,6 +66,9 @@ class State{
         }
         void add_transition(char symbol, State* state){
             transitions[symbol].push_back(state);
+        }
+        void set_transitions(unordered_map<char, vector<State*>> transitions){
+            this->transitions = transitions;
         }
         void add_e_closure(State* state){
             e_closure.push_back(state);
