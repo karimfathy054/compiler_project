@@ -52,8 +52,14 @@ public:
                     if(c == '\\') {
                         i++;
                         c = def[i];
+                        if(c == 'L'){ //  '\L' means a lambda transition
+                            s.push(new NFA());
+                        }else{
+                            s.push(new NFA(c));
+                        }
+                    }else{
+                        s.push(new NFA(c));
                     }
-                    s.push(new NFA(c));
                 }
             }
             if(s.size() != 1) throw runtime_error("Invalid Regular Expression!! Should have ended with one NFA, but ended with " + to_string(s.size()));
@@ -103,15 +109,16 @@ private:
     }
 };
 
-int main(){
-    vector<pair<string, string>> rules = {
-        {"ABC","ABC~~"},
-        {"ID", "abc||"},
-        {"NUM", "0123456789|||||||||"},
-        {"OP", "\\+-\\*/|||*"}
-    };
-    NFAGenerator nfa_gen;
-    NFA* nfa = nfa_gen.generateNFA(rules);
-    nfa_gen.print_nfa(nfa);
-    return 0;
-}
+// int main(){
+//     vector<pair<string, string>> rules = {
+//         {"optional","a\\L|"},
+//         {"ABC","ABC~~"},
+//         {"ID", "abc||"},
+//         {"NUM", "0123456789|||||||||"},
+//         {"OP", "\\+-\\*/|||*"}
+//     };
+//     NFAGenerator nfa_gen;
+//     NFA* nfa = nfa_gen.generateNFA(rules);
+//     nfa_gen.print_nfa(nfa);
+//     return 0;
+// }

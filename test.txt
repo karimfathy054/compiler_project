@@ -1,4 +1,1 @@
-one: (a|b)*abb
-two: a|b*|cd(ef)*gh*ij
-
-ab*cdef~*gh*ij ~ ~ ~ ~ ~ ~ || -> a|b*|cd(ef)*g(h)*ij  :)
+id: (a|b)*abb
