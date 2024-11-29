@@ -1,6 +1,9 @@
-// #include "NFA.cpp"
+#pragma once
+
 #include "NFAGenerator.cpp"
 #include "RulesReader.cpp"
+#include "DFAState.cpp"
+#include "State.cpp"
 #include <iostream>
 #include <unordered_set>
 #include <climits>
@@ -8,7 +11,6 @@
 
 class DFAGenerator{
     private:
-        State* start_state;
         std::string set_to_string(const std::set<State*> s) {
             std::string result = "";
             for (State* elem : s) {
@@ -18,24 +20,28 @@ class DFAGenerator{
         }
     public:
         DFAGenerator(){}
-        State* get_start_state(){
-            return start_state;
-        }
-        void generateDFA(NFA* nfa, vector<pair<string, string>> rules){
+        DFAState* generateDFA(NFA* nfa, vector<pair<string, string>> rules, unordered_set<char> possible_inputs){
             int state_id_counter = 0;
             unordered_map<string, State*> dfa_states;
-            start_state = new State(state_id_counter++);
+
+            State* start_state = new State(state_id_counter++);
             start_state->add_nfa_state(nfa->get_start_state());
+            
             dfa_states[set_to_string(start_state->get_nfa_states())] = start_state;
+            
             queue<State*> states_queue;
             states_queue.push(start_state);
+
             while(!states_queue.empty()){
                 State* curr_state = states_queue.front();
                 states_queue.pop();
+
                 unordered_map<char, set<State*>> transitions;
+                // Not neccessary? State are unique
                 for(auto &trans: curr_state->get_transitions()) {
                     const char key = trans.first;
                     const vector<State*> states = trans.second;
+
                     if(transitions.find(key) == transitions.end()){
                         transitions[key] = set<State*>(states.begin(), states.end());
                     }
@@ -44,6 +50,7 @@ class DFAGenerator{
                     }
                     // l7d hna tmam
                 }
+
                 unordered_map<char, vector<State*>> new_transitions;
                 for(auto &trans: transitions){
                     set<State*> new_state_set = trans.second;
@@ -62,6 +69,8 @@ class DFAGenerator{
                         new_transitions[trans.first] = vector<State*>{dfa_states[set_to_string(new_state_set)]};
                     }
                 }
+                
+                
                 curr_state->set_transitions(new_transitions);
                 int acc_state = INT_MAX;
                 for(auto nfa_state: curr_state->get_nfa_states()){
@@ -78,37 +87,30 @@ class DFAGenerator{
                     curr_state->set_acc_state_def(rules[acc_state].first);
                 }
             }
+            return DFAState::convert_to_dfa_state(start_state, possible_inputs);
         }
 
-        void print_dfa(){
+        void print_dfa(DFAState* start_state){
             unordered_set<int> visited;
-            queue<State*> q;
+            queue<DFAState*> q;
             q.push(start_state);
             while(!q.empty()){
-                State* curr_state = q.front();
+                DFAState* curr_state = q.front();
                 q.pop();
+
                 if(visited.find(curr_state->get_state_id()) != visited.end()) continue;
                 visited.insert(curr_state->get_state_id());
+
                 cout << "State: " << curr_state->get_state_id() << endl;
                 cout << "Accepting State Definition: " << (curr_state->get_acc_state_def() == ""? "Not Accepting": curr_state->get_acc_state_def()) << endl;
-                cout << "NFA States: ";
-                for(State* nfa_state: curr_state->get_nfa_states()){
-                    cout << nfa_state->get_state_id() << " ";
-                }
                 cout << endl;
-                for(auto &trans: curr_state->get_transitions()){
-                    cout << "Transition: " << trans.first << " ";
-                    for(State* state: trans.second){
-                        cout << state->get_state_id() << " ";
-                        q.push(state);
-                    }
-                    cout << endl;
+                
+                cout << "Transition: " << endl;
+                for(auto &[input, next]: curr_state->get_transitions()){
+                    cout << input << ": " << next->get_state_id() << endl;
+                    q.push(next);
                 }
-                cout << endl;
             }
-        }
-        State* get_dfa_start_state(){
-            return start_state;
         }
 };
 

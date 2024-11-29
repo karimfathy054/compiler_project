@@ -241,8 +241,8 @@ public:
     }
 
 
-    unordered_set<string> get_possible_inputs() {
-        unordered_set<string> possible_inputs;
+    unordered_set<char> get_possible_inputs() {
+        unordered_set<char> possible_inputs;
         vector<pair<string, string>> rules = get_all_rules();
         for (int i = 0; i < rules.size(); i++)
         {
@@ -251,10 +251,10 @@ public:
             {
                 if(def[j] == '\\') {
                     j++;
-                    possible_inputs.insert(string(1, def[j]));
+                    possible_inputs.insert(def[j]);
                 }else if (is_input(def[j]))
                 {
-                    possible_inputs.insert(string(1, def[j]));
+                    possible_inputs.insert(def[j]);
                 }
             }
         }

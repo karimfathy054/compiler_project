@@ -1,40 +1,70 @@
 #include <iostream>
 #include <bits/stdc++.h>
-#include "State.cpp"
+#include "DFAState.cpp"
 
 using namespace std;
 
 class DFADecoder {
-    int cur_ind;
-    State* current_state;
+    vector<pair<string, int>> tokens;
+    DFAState* dfa_start_state;
     string input;
-public:
-    DFADecoder(State* dfa_start_state, string input){
-        cur_ind = 0;
-        current_state = dfa_start_state;
-        this->input = input;
+    int i;
+    string extract_input(int i) {
+        int prev_ind = i == 0? 0: tokens[i-1].second+1;
+        return input.substr(prev_ind, tokens[i].second-prev_ind+1);
     }
-    // Throws runtime_error if invalid input
-    string next_token(){
-        if(cur_ind >= input.size()) throw runtime_error("End of input reached");
+public:
+    DFADecoder(DFAState* dfa_start_state, string input){
+        tokens = {};
+        this->dfa_start_state = dfa_start_state;
+        input.erase(remove(input.begin(), input.end(), '\\'), input.end());
+        this->input = input;
+        i = 0;
+    }
+    void decode_dfa() {
+        tokens = decode_dfa(0);
+    }
+    vector<pair<string, int>> decode_dfa(int cur_ind){
 
-        // holds the final acceptin state and its index in the input
-        pair<string, int> result("", -1);
+        // holds the final accepting state and its index in the input
+        vector<pair<string, int>> results;
+        DFAState* current_state = dfa_start_state;
 
         for(int i = cur_ind; i < input.size(); i++) {
             char symbol = input[i];
             try {
-                current_state = current_state->get_input_transitions(symbol)[0];
+                current_state = current_state->get_transition(symbol);
             } catch(const std::exception& e) {
                 throw invalid_argument("Not DFA! Some states doesn't have transitions for some symbols\n");
             }
             if(current_state->get_acc_state_def() != ""){
-                result = {current_state->get_acc_state_def(), i};
+                results.push_back({current_state->get_acc_state_def(), i});
             }
         }
-        if(result.second == -1) throw runtime_error("omarabctarek");
-        cur_ind = result.second+1;
-        cout << cur_ind << endl;
-        return result.first;
+
+        // if no accepting state found
+        if(results.size() == 0) return {};
+
+        // if an accepting state is found at the end of the input
+        if(results.back().second == input.size()-1) return {results.back()};
+        
+        // if some of the string is left unmatched
+        // rollback if needed
+        for(int i = results.size()-1; i >= 0; i--){
+            vector<pair<string, int>> next_res = decode_dfa(results[i].second+1);
+            if(next_res.size() >= 1){
+                // this combination is valid
+                next_res.insert(next_res.begin(), results[i]);
+                return next_res;
+            }
+            // rollback
+        }
+        return {};
+    }
+    pair<string, string> next_token() {
+        if(i == tokens.size()) return {"", ""};
+        pair<string, string> res = {tokens[i].first, extract_input(i)};
+        i++;
+        return res;
     }
 };
