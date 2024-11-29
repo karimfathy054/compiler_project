@@ -6,6 +6,11 @@ class NFA{
         State* start_state;
         State* final_state;
     public:
+        NFA(){
+            start_state = new State(state_id_counter++);
+            final_state = new State(state_id_counter++);
+            start_state->add_e_closure(final_state);
+        }
         NFA(char c){
             start_state = new State(state_id_counter++);
             final_state = new State(state_id_counter++);
