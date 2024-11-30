@@ -12,7 +12,7 @@
 // this example from Lecture 4 (Dr pdfs) 
 int main(int, char**){
     string input;
-    ifstream input_file("../input.txt");
+    ifstream input_file("input.txt");
     
     // check for file existance
     if (!input_file)
@@ -21,7 +21,7 @@ int main(int, char**){
         exit(1);
     }
     
-    RulesReader r("../test.txt");
+    RulesReader r("test.txt");
     auto rules = r.get_all_rules();
     cout << "Rules: \n";
     for(auto rule: rules) {

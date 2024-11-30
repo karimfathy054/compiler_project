@@ -1,3 +1,5 @@
-id: omar(a|b|c)*tarek
+name: ab
+id: (a|b|c)*ab
+test: (a|b)*ab
 { boolean }
 [ ; , \(]
