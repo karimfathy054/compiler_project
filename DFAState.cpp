@@ -24,6 +24,20 @@ public:
             transitions[input] = this;
         }
     }
+    void combine_states_outputs(DFAState* state){
+        for(auto& transition: state->get_transitions()){
+            if(this->transitions.find(transition.first) != this->transitions.end()){
+                this->transitions[transition.first] = transition.second;
+            }
+        }
+    }
+    set<char> get_transition_symbols(){
+        set<char> symbols;
+        for(auto& transition:transitions){
+            symbols.insert(transition.first);
+        }
+        return symbols;
+    }
     void set_transition(char input, DFAState* state){
         transitions[input] = state;
     }

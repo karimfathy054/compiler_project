@@ -31,13 +31,13 @@ class DFAGenerator{
             
             queue<State*> states_queue;
             states_queue.push(start_state);
-
+            
             while(!states_queue.empty()){
                 State* curr_state = states_queue.front();
                 states_queue.pop();
 
                 unordered_map<char, set<State*>> transitions;
-                // Not neccessary? State are unique
+                
                 for(auto &trans: curr_state->get_transitions()) {
                     const char key = trans.first;
                     const vector<State*> states = trans.second;
