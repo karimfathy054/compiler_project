@@ -13,8 +13,7 @@
 int main(int, char**){
     string input;
     ifstream input_file("../input.txt");
-    getline(input_file, input);
-
+    
     // check for file existance
     if (!input_file)
     {
@@ -28,26 +27,36 @@ int main(int, char**){
     for(auto rule: rules) {
         cout << rule.first << ": " << rule.second << endl;
     }
+
     cout << "NFA\n";
     NFAGenerator nfa_gen;
     NFA* nfa = nfa_gen.generateNFA(rules);
+
     cout << "DFA\n";
     DFAGenerator dfa_gen;
+
     cout << "Generating\n";
     DFAState* dfa_state = dfa_gen.generateDFA(nfa, rules, r.get_possible_inputs());
-    cout << "Minimized DFA\n";
-    DFAMinimizer dfa_minimizer(dfa_state);
+
     cout << "Minimizing\n";
+    DFAMinimizer dfa_minimizer(dfa_state);
     dfa_minimizer.minimize();
+
     cout << "Decoding\n";
-    DFADecoder dfa_decoder(dfa_state, input);
-    cout << "Decoding dga\n";
-    dfa_decoder.decode_dfa();
+    while(getline(input_file, input)) {
+        input.erase(remove_if(input.begin(), input.end(), ::isspace), input.end());
+        cout << "Input: " << input << endl;
+        if(input.size() >= 2 and input[0] == '/' and input[1] == '/') {
+            cout << "Skipping Comment\n";
+            continue;
+        }
 
+        DFADecoder dfa_decoder(dfa_state, input);
+        dfa_decoder.decode_dfa();
 
-    cout << "Tokens: \n";
-    pair<string, string> token;
-    while((token = dfa_decoder.next_token()).first != "") {
-        cout << "Token: " << token.first << " Value: " << token.second << endl;
-    }
+        pair<string, string> token;
+        while((token = dfa_decoder.next_token()).first != "") {
+            cout << token.first << ": " << token.second << endl;
+        }
+    }    
 }
