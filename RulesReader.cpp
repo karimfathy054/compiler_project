@@ -156,12 +156,34 @@ private:
         }
         return postfix;
     }
-
+    bool is_input(char c) {
+        return not (c == '|' || c == '*' || c == '+' || c == '(' || c == ')' || c == CONCAT);
+    }
+    void generate_all_rules()
+    {   
+        vector<pair<string, string>> all_rules;
+        for(int i = order.size()-1; i>= 0; i--) {
+            if(order[i] == 'r') {
+                all_rules.push_back(rules.back());
+                rules.pop_back();
+            }else if(order[i] == 'k') {
+                // add the keywords as rules (ex: int: int~~)
+                all_rules.push_back({ keywords.back(), keywords.back() + string(keywords.back().size()-1, '~') });
+                keywords.pop_back();
+            }else if(order[i] == 'p') {
+                all_rules.push_back({ "p_" + to_string(punctuations.size()-1), punctuations.back() });
+                punctuations.pop_back();
+            }
+        }
+        this->all_rules = vector(all_rules.rbegin(), all_rules.rend());
+    }
 public:
     vector<string> keywords;
     vector<string> punctuations;
     unordered_map<string, string> definitions;
     vector<pair<string, string>> rules;
+    vector<char> order;
+    vector<pair<string, string>> all_rules;
 
     RulesReader(string rulesFilePath)
     {
@@ -193,6 +215,7 @@ public:
                 while (iss >> keyword)
                 {
                     keywords.push_back(keyword);
+                    order.push_back('k');
                 }
             }
             else if (regex_match(line, match, punctuations_regex))
@@ -203,6 +226,7 @@ public:
                 while (iss >> punctuation)
                 {
                     punctuations.push_back(punctuation);
+                    order.push_back('p');
                 }
             }
             else if (regex_match(line, match, definitions_regex))
@@ -216,10 +240,37 @@ public:
                 string name = match[1];
                 string rule = match[2];
                 rules.push_back(make_pair(name, rule));
+                order.push_back('r');
             }
         }
         process_definitions();
         process_rules();
+        generate_all_rules();
+    }
+   
+    vector<pair<string, string>> get_all_rules()
+    {
+        return all_rules;
+    }
+
+    unordered_set<char> get_possible_inputs() {
+        unordered_set<char> possible_inputs;
+        vector<pair<string, string>> rules = get_all_rules();
+        for (int i = 0; i < rules.size(); i++)
+        {
+            string &def = rules[i].second;
+            for (int j = 0; j < def.size(); j++)
+            {
+                if(def[j] == '\\') {
+                    j++;
+                    possible_inputs.insert(def[j]);
+                }else if (is_input(def[j]))
+                {
+                    possible_inputs.insert(def[j]);
+                }
+            }
+        }
+        return possible_inputs;
     }
 };
 
