@@ -62,7 +62,7 @@ public:
     static DFAState* convert_to_dfa_state(State* start_state, unordered_set<char> possible_inputs){
         int state_id_counter = 0;
 
-        DFAState* dead_state = new DFAState(state_id_counter++);
+        DFAState* dead_state = new DFAState(-1);
         dead_state->kill_state(possible_inputs);
 
         // map nfa state ids to it's corresponding dfa state
@@ -95,6 +95,7 @@ public:
                 new_state->set_transition(input, dfa_states[next_state->get_state_id()]);
             }
         }
+        dead_state->state_id = state_id_counter++;
         return dfa_states[start_state->get_state_id()];
     }
     
