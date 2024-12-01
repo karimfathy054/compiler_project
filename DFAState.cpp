@@ -19,7 +19,6 @@ public:
         acc_state_def = "";
     }
     void kill_state(unordered_set<char> possible_inputs){
-        acc_state_def = "";
         for(char input: possible_inputs){
             transitions[input] = this;
         }
@@ -52,6 +51,9 @@ public:
     }
     DFAState* get_transition(char input){
         return transitions[input];
+    }
+    bool contains_transition(char input){
+        return transitions.find(input) != transitions.end();
     }
     int get_state_id(){
         return state_id;
