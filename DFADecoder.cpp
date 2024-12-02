@@ -63,7 +63,7 @@ public:
                     tokens.push_back({lastAcceptState, input.substr(pos, lastAcceptIndex - pos + 1)});
                     
                     if(lastRejectedIndex != -2)
-                        cout << "Invalid Token at line " << line_number << ": " << input.substr(rejectedChars+1, lastRejectedIndex) << endl;
+                        cout << "Invalid Token at line " << line_number << ": " << input.substr(lastRejectedIndex, rejectedChars+1) << endl;
                     lastRejectedIndex = -2;
                     rejectedChars = 0;
 
@@ -74,10 +74,14 @@ public:
                         rejectedChars++;
                     }
                     else{
-                        if(lastRejectedIndex != -2)
-                            cout << "Invalid Token at line " << line_number << ": " << input.substr(rejectedChars+1, lastRejectedIndex) << endl;
                         lastRejectedIndex = pos;
                         rejectedChars = 0;
+                    }
+                    if(pos == input.size()-1){
+                        if(lastRejectedIndex != -2)
+                            cout << "Invalid Token at line " << line_number << ": " << input.substr(lastRejectedIndex, rejectedChars+1) << endl;
+                        else
+                            cout << "Invalid Token at line " << line_number << ": " << input.substr(pos, 1) << endl;
                     }
                     pos++;
                 }
