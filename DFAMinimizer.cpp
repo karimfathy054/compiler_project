@@ -42,7 +42,7 @@ class DFAMinimizer {
             // mark all final states with other non final states
             for(int i=0;i<id_state_map.size();i++){
                 for(int j=0;j<i;j++){
-                    if((final_states.find(id_state_map[i]) != final_states.end() && final_states.find(id_state_map[j]) == final_states.end()) || (final_states.find(id_state_map[i]) == final_states.end() && final_states.find(id_state_map[j]) != final_states.end())){
+                    if(final_states.find(id_state_map[i]) != final_states.end() || final_states.find(id_state_map[j]) != final_states.end()){
                         table[i][j] = true;
                     }
                 }

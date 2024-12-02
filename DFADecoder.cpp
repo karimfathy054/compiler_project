@@ -5,65 +5,94 @@
 using namespace std;
 
 class DFADecoder {
-    vector<pair<string, int>> tokens;
+    vector<pair<string, string>> tokens;
     DFAState* dfa_start_state;
+    vector<string> inputs;
     string input;
+    int line_number;
     int i;
-    string extract_input(int i) {
-        int prev_ind = i == 0? 0: tokens[i-1].second+1;
-        return input.substr(prev_ind, tokens[i].second-prev_ind+1);
+private:
+    vector<string> splitString(const string& str) {
+        vector<string> result;
+        istringstream stream(str);
+        string word;
+
+        // Read each word, skipping multiple spaces
+        while (stream >> word) {
+            result.push_back(word);
+        }
+
+        return result;
     }
 public:
-    DFADecoder(DFAState* dfa_start_state, string input){
+    DFADecoder(DFAState* dfa_start_state, string input, int line_number) {
         tokens = {};
+        this->line_number = line_number;
         this->dfa_start_state = dfa_start_state;
-        input.erase(remove(input.begin(), input.end(), '\\'), input.end());
+
+        // remove the line if it's a comment
+        size_t pos = input.find("//");
+        if(pos != string::npos) input = input.substr(0, pos);
+        
         this->input = input;
+        // split the input into words separated by spaces
+        this->inputs = splitString(input);
         i = 0;
     }
     void decode_dfa() {
-        tokens = decode_dfa(0);
-    }
-    vector<pair<string, int>> decode_dfa(int cur_ind){
+        for(auto input:inputs){
+            int pos = 0;
+            int lastRejectedIndex = -2;
+            int rejectedChars = 0;
+            while(pos < input.size()) {
+                string lastAcceptState = "";
+                int lastAcceptIndex = pos;
+                DFAState* current_state = dfa_start_state;
 
-        // holds the final accepting state and its index in the input
-        vector<pair<string, int>> results;
-        DFAState* current_state = dfa_start_state;
+                for(int i=lastAcceptIndex; i<input.size(); i++){
+                    if(current_state->contains_transition(input[i])){
+                        current_state = current_state->get_transition(input[i]);
+                        if(current_state->get_acc_state_def() != ""){
+                            lastAcceptState = current_state->get_acc_state_def();
+                            lastAcceptIndex = i;
+                        }
+                    }
+                    else{
+                        break;
+                    }
+                }
+                if(lastAcceptState != ""){
+                    tokens.push_back({lastAcceptState, input.substr(pos, lastAcceptIndex - pos + 1)});
+                    
+                    if(lastRejectedIndex != -2)
+                        cout << "Invalid Token at line " << line_number << ": " << input.substr(lastRejectedIndex, rejectedChars+1) << endl;
+                    lastRejectedIndex = -2;
+                    rejectedChars = 0;
 
-        for(int i = cur_ind; i < input.size(); i++) {
-            char symbol = input[i];
-            try {
-                current_state = current_state->get_transition(symbol);
-            } catch(const std::exception& e) {
-                throw invalid_argument("Not DFA! Some states doesn't have transitions for some symbols\n");
-            }
-            if(current_state->get_acc_state_def() != ""){
-                results.push_back({current_state->get_acc_state_def(), i});
+                    pos = lastAcceptIndex + 1;
+                }
+                else{
+                    if(pos == lastRejectedIndex+rejectedChars+1){
+                        rejectedChars++;
+                    }
+                    else{
+                        lastRejectedIndex = pos;
+                        rejectedChars = 0;
+                    }
+                    if(pos == input.size()-1){
+                        if(lastRejectedIndex != -2)
+                            cout << "Invalid Token at line " << line_number << ": " << input.substr(lastRejectedIndex, rejectedChars+1) << endl;
+                        else
+                            cout << "Invalid Token at line " << line_number << ": " << input.substr(pos, 1) << endl;
+                    }
+                    pos++;
+                }
             }
         }
-
-        // if no accepting state found
-        if(results.size() == 0) return {};
-
-        // if an accepting state is found at the end of the input
-        if(results.back().second == input.size()-1) return {results.back()};
-        
-        // if some of the string is left unmatched
-        // rollback if needed
-        for(int i = results.size()-1; i >= 0; i--){
-            vector<pair<string, int>> next_res = decode_dfa(results[i].second+1);
-            if(next_res.size() >= 1){
-                // this combination is valid
-                next_res.insert(next_res.begin(), results[i]);
-                return next_res;
-            }
-            // rollback
-        }
-        return {};
     }
     pair<string, string> next_token() {
         if(i == tokens.size()) return {"", ""};
-        pair<string, string> res = {tokens[i].first, extract_input(i)};
+        pair<string, string> res = tokens[i];
         i++;
         return res;
     }
