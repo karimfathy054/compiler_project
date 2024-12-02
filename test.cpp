@@ -37,21 +37,24 @@ int main(int, char**){
 
     cout << "Generating\n";
     DFAState* dfa_state = dfa_gen.generateDFA(nfa, rules, r.get_possible_inputs());
+    // dfa_gen.print_dfa(dfa_state);
 
     cout << "Minimizing\n";
     DFAMinimizer dfa_minimizer(dfa_state);
     dfa_minimizer.minimize();
+    // dfa_gen.print_dfa(dfa_state);
 
     cout << "Decoding\n";
+    int line_number = 0;
     while(getline(input_file, input)) {
-        input.erase(remove_if(input.begin(), input.end(), ::isspace), input.end());
+        line_number++;
         cout << "Input: " << input << endl;
         if(input.size() >= 2 and input[0] == '/' and input[1] == '/') {
             cout << "Skipping Comment\n";
             continue;
         }
 
-        DFADecoder dfa_decoder(dfa_state, input);
+        DFADecoder dfa_decoder(dfa_state, input, line_number);
         dfa_decoder.decode_dfa();
 
         pair<string, string> token;
