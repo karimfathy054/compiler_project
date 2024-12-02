@@ -31,7 +31,9 @@ public:
         this->dfa_start_state = dfa_start_state;
 
         // remove the line if it's a comment
-        input.erase(remove(input.begin(), input.end(), '\\'), input.end());
+        size_t pos = input.find("//");
+        if(pos != string::npos) input = input.substr(0, pos);
+        
         this->input = input;
         // split the input into words separated by spaces
         this->inputs = splitString(input);
