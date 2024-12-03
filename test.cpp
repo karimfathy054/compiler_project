@@ -11,8 +11,13 @@
 // Test the lexical analyzer using the rules in the file "test.txt"
 // this example from Lecture 4 (Dr pdfs) 
 int main(int, char**){
+    string input_file_path = "../input.txt";
+    string rules_file_path = "../lexical rules.txt";
+    string dfa_file_path = "../dfa.txt";
+    string output_file_path = "../output.txt";
+
     string input;
-    ifstream input_file("/home/karim/compiler_project/input.txt");
+    ifstream input_file(input_file_path);
     
     // check for file existance
     if (!input_file)
@@ -21,52 +26,68 @@ int main(int, char**){
         exit(1);
     }
     
-    RulesReader r("/home/karim/compiler_project/lexical rules.txt");
-    auto rules = r.get_all_rules();
-    cout << "Rules: \n";
-    for(auto rule: rules) {
-        cout << rule.first << ": " << rule.second << endl;
-    }
+    cout << "Reading Rules...\n";
+    RulesReader r(rules_file_path);
+    vector<pair<string, string>> rules = r.get_all_rules();
 
-    cout << "NFA\n";
+    cout << "Generating NFA...\n";
     NFAGenerator nfa_gen;
     NFA* nfa = nfa_gen.generateNFA(rules);
 
-    cout << "DFA\n";
+    cout << "Generating DFA...\n";
     DFAGenerator dfa_gen;
-
-    cout << "Generating\n";
     DFAState* dfa_state = dfa_gen.generateDFA(nfa, rules, r.get_possible_inputs());
-    // dfa_gen.print_dfa(dfa_state);
 
-    cout << "Minimizing\n";
+    cout << "Minimizing DFA...\n";
     DFAMinimizer dfa_minimizer(dfa_state);
     dfa_minimizer.minimize();
-    // dfa_gen.print_dfa(dfa_state);
-    cout<<"*****************************************"<<endl<<endl;
 
-    cout << "Decoding\n";
+    dfa_state->check_all_is_dead();
+
+    // print the dfa states in dfa.txt
+    DFAState::print_dfa(dfa_file_path, dfa_state);
+
+    cout << "Decoding...\n";
+
+    ofstream output_file(output_file_path);
+
+    if(!output_file.is_open()) {
+        cerr << "Unable to open file: " << output_file_path << endl;
+        return 0;
+    }
+
     int line_number = 0;
     while(getline(input_file, input)) {
         line_number++;
-        // cout << "Input: " << input << endl;
-        if(input.size() >= 2 and input[0] == '/' and input[1] == '/') {
-            // cout << "Skipping Comment\n";
-            continue;
-        }
+
+        // remove the line if it's a comment
+        size_t pos = input.find("//");
+        if(pos != string::npos) input = input.substr(0, pos);
+
+        // remove this for now in case some state accepts \L
+        // if(input.empty()) {
+        //     continue;
+        // }
 
         DFADecoder dfa_decoder(dfa_state, input, line_number);
-        dfa_decoder.decode_dfa();
 
         pair<string, string> token;
-        while((token = dfa_decoder.next_token()).first != "") {
-            // cout << token.first << ": " << token.second << endl;
-            if(token.first[0] == 'p'){
-                cout << token.second << endl;
+        try {
+            while((token = dfa_decoder.next_token()).first != "") {
+                if(token.first == "whitespace") continue;
+                if(token.first[0] == 'p'){
+                    output_file << endl << token.second;
+                }
+                else{
+                    output_file << endl << token.first;
+                }
             }
-            else{
-                cout << token.first << endl;
-            }
+        } catch(const std::invalid_argument& e) {
+            output_file << endl << e.what();
+            output_file << "\nEnter Panic Mode...\nSkipping line";
+            continue;
         }
     }    
+    output_file.close();
+    cout << "Done.";
 }

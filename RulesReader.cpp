@@ -161,20 +161,7 @@ private:
         return not (c == '|' || c == '*' || c == '+' || c == '(' || c == ')' || c == CONCAT);
     }
     void generate_all_rules()
-    {   
-        // for(int i = order.size()-1; i>= 0; i--) {
-        //     if(order[i] == 'r') {
-        //         all_rules.push_back(rules.back());
-        //         rules.pop_back();
-        //     }else if(order[i] == 'k') {
-        //         // add the keywords as rules (ex: int: int~~)
-        //         all_rules.push_back({ keywords.back(), keywords.back() + string(keywords.back().size()-1, '~') });
-        //         keywords.pop_back();
-        //     }else if(order[i] == 'p') {
-        //         all_rules.push_back({ "p_" + to_string(punctuations.size()-1), punctuations.back() });
-        //         punctuations.pop_back();
-        //     }
-        // }
+    {
         for(string k:keywords){
             all_rules.push_back ({k, k + string(k.size()-1, '~')});
         }
@@ -185,6 +172,7 @@ private:
         {
             all_rules.push_back(rules[i]);
         }
+        all_rules.push_back({"whitespace", " \n\t||+"});
     }
 public:
     vector<string> keywords;

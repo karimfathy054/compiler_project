@@ -5,95 +5,58 @@
 using namespace std;
 
 class DFADecoder {
-    vector<pair<string, string>> tokens;
+private:
     DFAState* dfa_start_state;
-    vector<string> inputs;
     string input;
     int line_number;
     int i;
-private:
-    vector<string> splitString(const string& str) {
-        vector<string> result;
-        istringstream stream(str);
-        string word;
-
-        // Read each word, skipping multiple spaces
-        while (stream >> word) {
-            result.push_back(word);
-        }
-
-        return result;
-    }
-public:
+    public:
     DFADecoder(DFAState* dfa_start_state, string input, int line_number) {
-        tokens = {};
         this->line_number = line_number;
         this->dfa_start_state = dfa_start_state;
-
-        // remove the line if it's a comment
-        size_t pos = input.find("//");
-        if(pos != string::npos) input = input.substr(0, pos);
         
         this->input = input;
-        // split the input into words separated by spaces
-        this->inputs = splitString(input);
         i = 0;
     }
-    void decode_dfa() {
-        for(auto input:inputs){
-            int pos = 0;
-            int lastRejectedIndex = -2;
-            int rejectedChars = 0;
-            while(pos < input.size()) {
-                string lastAcceptState = "";
-                int lastAcceptIndex = pos;
-                DFAState* current_state = dfa_start_state;
+    pair<string, string> next_token() {
+        if(i > input.size()) return {"", ""};
+        if(i == input.size()) {
+            // handle if a state accepts \L
+            i++;
+            if(dfa_start_state->get_acc_state_def() != "")
+                return {dfa_start_state->get_acc_state_def(), ""};
+            // if no state accepts \L
+            return {"", ""};
+        }
 
-                for(int i=lastAcceptIndex; i<input.size(); i++){
-                    if(current_state->contains_transition(input[i])){
-                        current_state = current_state->get_transition(input[i]);
-                        if(current_state->get_acc_state_def() != ""){
-                            lastAcceptState = current_state->get_acc_state_def();
-                            lastAcceptIndex = i;
-                        }
-                    }
-                    else{
-                        break;
-                    }
-                }
-                if(lastAcceptState != ""){
-                    tokens.push_back({lastAcceptState, input.substr(pos, lastAcceptIndex - pos + 1)});
-                    
-                    if(lastRejectedIndex != -2)
-                        cout << "Invalid Token at line " << line_number << ": " << input.substr(lastRejectedIndex, rejectedChars+1) << endl;
-                    lastRejectedIndex = -2;
-                    rejectedChars = 0;
+        int last_accept_index = -1;
+        string last_accept_state = "";
+        DFAState* current_state = dfa_start_state;
 
-                    pos = lastAcceptIndex + 1;
-                }
-                else{
-                    if(pos == lastRejectedIndex+rejectedChars+1){
-                        rejectedChars++;
-                    }
-                    else{
-                        lastRejectedIndex = pos;
-                        rejectedChars = 0;
-                    }
-                    if(pos == input.size()-1){
-                        if(lastRejectedIndex != -2)
-                            cout << "Invalid Token at line " << line_number << ": " << input.substr(lastRejectedIndex, rejectedChars+1) << endl;
-                        else
-                            cout << "Invalid Token at line " << line_number << ": " << input.substr(pos, 1) << endl;
-                    }
-                    pos++;
+        for(int ind = i; ind < input.size(); ind++) {
+            if(current_state->is_dead()) break;
+
+            if(current_state->contains_transition(input[ind])) {
+                current_state = current_state->get_transition(input[ind]);
+
+                if(current_state->get_acc_state_def() != "") {
+                    last_accept_state = current_state->get_acc_state_def();
+                    last_accept_index = ind;
                 }
             }
+            else{
+                // throw the error message
+                throw invalid_argument("Invalid Token at line " + to_string(line_number) + ":" + to_string(ind) + ": " + input.substr(ind));
+            }
         }
-    }
-    pair<string, string> next_token() {
-        if(i == tokens.size()) return {"", ""};
-        pair<string, string> res = tokens[i];
-        i++;
-        return res;
+        
+        // no accepting state found
+        if (last_accept_index == -1)
+            throw invalid_argument("Invalid Token at line " + to_string(line_number) + ":" + to_string(i) + ": " + input.substr(i));
+
+        string matched_input = input.substr(i, last_accept_index - i + 1);
+        i = last_accept_index + 1;
+
+        return {last_accept_state, matched_input};
     }
 };

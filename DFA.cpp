@@ -89,39 +89,4 @@ class DFAGenerator{
             }
             return DFAState::convert_to_dfa_state(start_state, possible_inputs);
         }
-
-        void print_dfa(DFAState* start_state){
-            unordered_set<int> visited;
-            queue<DFAState*> q;
-            q.push(start_state);
-            while(!q.empty()){
-                DFAState* curr_state = q.front();
-                q.pop();
-
-                if(visited.find(curr_state->get_state_id()) != visited.end()) continue;
-                visited.insert(curr_state->get_state_id());
-
-                cout << "State: " << curr_state->get_state_id() << endl;
-                cout << "Accepting State Definition: " << (curr_state->get_acc_state_def() == ""? "Not Accepting": curr_state->get_acc_state_def()) << endl;
-                
-                cout << "Transition: " << endl;
-                for(auto &[input, next]: curr_state->get_transitions()){
-                    if(!next->isDead)
-                        cout << input << ": " << next->get_state_id() << endl;
-                    q.push(next);
-                }
-            }
-        }
 };
-
-
-// // Test the lexical analyzer using the rules in the file "test.txt"
-// // this example from Lecture 4 (Dr pdfs) 
-// int main(int, char**){
-//     RulesReader r("test.txt");
-//     NFAGenerator nfa_gen;
-//     NFA* nfa = nfa_gen.generateNFA(r.rules);
-//     DFAGenerator dfa_gen;
-//     dfa_gen.generateDFA(nfa, r.rules);
-//     dfa_gen.print_dfa();
-// }

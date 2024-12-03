@@ -13,18 +13,12 @@ private:
     int state_id;
     unordered_map<char, DFAState*> transitions;
     string acc_state_def;
-public:
     bool isDead;
+public:
     DFAState(int id){
         state_id = id;
         isDead = false;
         acc_state_def = "";
-    }
-    void kill_state(unordered_set<char> possible_inputs){
-        for(char input: possible_inputs){
-            transitions[input] = this;
-        }
-        isDead = true;
     }
     void combine_states_outputs(DFAState* state){
         for(auto& transition: state->get_transitions()){
@@ -102,4 +96,74 @@ public:
         return dfa_states[start_state->get_state_id()];
     }
     
+
+    void check_all_is_dead() {
+        queue<DFAState*> q;
+        unordered_set<DFAState*> visited;
+
+        q.push(this);
+        visited.insert(this);
+
+        while(q.size()) {
+            DFAState* curr_state = q.front();
+            q.pop();
+
+            curr_state->check_is_dead();
+
+            for(auto [_, next_state]: curr_state->transitions) {
+                if(visited.find(next_state) == visited.end()) {
+                    visited.insert(next_state);
+                    q.push(next_state);
+                }
+            }
+        }
+    }
+    void check_is_dead(){
+        isDead = false;
+        for(auto [_, next_state]: transitions)
+            if(next_state != this) return;
+        isDead = true;
+    }
+    bool is_dead() {
+        return isDead;
+    }
+    void kill_state(unordered_set<char> possible_inputs){
+        for(char input: possible_inputs){
+            transitions[input] = this;
+        }
+        isDead = true;
+    }
+
+    static void print_dfa(string filename, DFAState* start_state){
+        ofstream file(filename);
+        if (!file.is_open()) {
+            cerr << "Unable to open file: " << filename << endl;
+            exit(1);
+        }
+
+        unordered_set<int> visited;
+        queue<DFAState*> q;
+        q.push(start_state);
+        while (!q.empty()) {
+            DFAState* curr_state = q.front();
+            q.pop();
+
+            if (visited.find(curr_state->get_state_id()) != visited.end()) continue;
+            visited.insert(curr_state->get_state_id());
+
+            file << "State: " << curr_state->get_state_id();
+            file << " Accepts: " << (curr_state->get_acc_state_def() == "" ? "NA" : curr_state->get_acc_state_def()) << endl;
+
+            file << "Transition: " << endl;
+            for (auto &[input, next] : curr_state->get_transitions()) {
+                if (!next->is_dead())
+                    file << input << "->" << next->get_state_id() << ' ';
+                q.push(next);
+            }
+            file << endl;
+        }
+
+        file.close();
+    }
+
 };
