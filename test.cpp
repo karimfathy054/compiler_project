@@ -42,7 +42,7 @@ int main(int, char**){
     cout << "Minimizing\n";
     DFAMinimizer dfa_minimizer(dfa_state);
     dfa_minimizer.minimize();
-    dfa_gen.print_dfa(dfa_state);
+    // dfa_gen.print_dfa(dfa_state);
     cout<<"*****************************************"<<endl<<endl;
 
     cout << "Decoding\n";

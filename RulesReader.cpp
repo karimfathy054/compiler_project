@@ -162,7 +162,6 @@ private:
     }
     void generate_all_rules()
     {   
-        vector<pair<string, string>> all_rules;
         // for(int i = order.size()-1; i>= 0; i--) {
         //     if(order[i] == 'r') {
         //         all_rules.push_back(rules.back());
@@ -186,7 +185,6 @@ private:
         {
             all_rules.push_back(rules[i]);
         }
-        this->all_rules = vector(all_rules.rbegin(), all_rules.rend());
     }
 public:
     vector<string> keywords;
