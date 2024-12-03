@@ -103,11 +103,11 @@ class DFAGenerator{
 
                 cout << "State: " << curr_state->get_state_id() << endl;
                 cout << "Accepting State Definition: " << (curr_state->get_acc_state_def() == ""? "Not Accepting": curr_state->get_acc_state_def()) << endl;
-                cout << endl;
                 
                 cout << "Transition: " << endl;
                 for(auto &[input, next]: curr_state->get_transitions()){
-                    cout << input << ": " << next->get_state_id() << endl;
+                    if(!next->isDead)
+                        cout << input << ": " << next->get_state_id() << endl;
                     q.push(next);
                 }
             }

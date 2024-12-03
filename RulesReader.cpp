@@ -6,6 +6,7 @@
 #include <stack>
 #include <sstream>
 #include <iostream>
+#include <unordered_set>
 #define CONCAT '~'
 using namespace std;
 class RulesReader
@@ -161,21 +162,29 @@ private:
     }
     void generate_all_rules()
     {   
-        vector<pair<string, string>> all_rules;
-        for(int i = order.size()-1; i>= 0; i--) {
-            if(order[i] == 'r') {
-                all_rules.push_back(rules.back());
-                rules.pop_back();
-            }else if(order[i] == 'k') {
-                // add the keywords as rules (ex: int: int~~)
-                all_rules.push_back({ keywords.back(), keywords.back() + string(keywords.back().size()-1, '~') });
-                keywords.pop_back();
-            }else if(order[i] == 'p') {
-                all_rules.push_back({ "p_" + to_string(punctuations.size()-1), punctuations.back() });
-                punctuations.pop_back();
-            }
+        // for(int i = order.size()-1; i>= 0; i--) {
+        //     if(order[i] == 'r') {
+        //         all_rules.push_back(rules.back());
+        //         rules.pop_back();
+        //     }else if(order[i] == 'k') {
+        //         // add the keywords as rules (ex: int: int~~)
+        //         all_rules.push_back({ keywords.back(), keywords.back() + string(keywords.back().size()-1, '~') });
+        //         keywords.pop_back();
+        //     }else if(order[i] == 'p') {
+        //         all_rules.push_back({ "p_" + to_string(punctuations.size()-1), punctuations.back() });
+        //         punctuations.pop_back();
+        //     }
+        // }
+        for(string k:keywords){
+            all_rules.push_back ({k, k + string(k.size()-1, '~')});
         }
-        this->all_rules = vector(all_rules.rbegin(), all_rules.rend());
+        for(string p:punctuations){
+            all_rules.push_back({"p_" + to_string(p.size()-1), p});
+        }
+        for (int i = 0; i < rules.size(); i++)
+        {
+            all_rules.push_back(rules[i]);
+        }
     }
 public:
     vector<string> keywords;
@@ -270,7 +279,7 @@ public:
                 }
             }
         }
-        return possible_inputs;
+                return possible_inputs;
     }
 };
 
