@@ -35,6 +35,18 @@ class DFAMinimizer {
                 }
             }
         }
+        bool mark_cell(DFAState* first_state , DFAState* second_state){
+            if(final_states.find(first_state) != final_states.end() && final_states.find(second_state) == final_states.end()){
+                return true;
+            }
+            if(final_states.find(first_state) == final_states.end() && final_states.find(second_state) != final_states.end()){
+                return true;
+            }
+            if(final_states.find(first_state) != final_states.end() && final_states.find(second_state) != final_states.end() && first_state->get_acc_state_def() != second_state->get_acc_state_def()){
+                return true;
+            }
+            return false;
+        }
 
         void minimize(){
             // construct the n^2 table
@@ -47,7 +59,7 @@ class DFAMinimizer {
             // mark all final states with other non final states
             for(int i=0;i<id_state_map.size();i++){
                 for(int j=0;j<i;j++){
-                    if(final_states.find(id_state_map[i]) != final_states.end() || final_states.find(id_state_map[j]) != final_states.end()){
+                    if(mark_cell(id_state_map[i],id_state_map[j])){
                         table[i][j] = true;
                     }
                 }
