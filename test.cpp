@@ -12,7 +12,7 @@
 // this example from Lecture 4 (Dr pdfs) 
 int main(int, char**){
     string input;
-    ifstream input_file("input.txt");
+    ifstream input_file("/home/karim/compiler_project/input.txt");
     
     // check for file existance
     if (!input_file)
@@ -21,7 +21,7 @@ int main(int, char**){
         exit(1);
     }
     
-    RulesReader r("test.txt");
+    RulesReader r("/home/karim/compiler_project/lexical rules.txt");
     auto rules = r.get_all_rules();
     cout << "Rules: \n";
     for(auto rule: rules) {
@@ -42,15 +42,16 @@ int main(int, char**){
     cout << "Minimizing\n";
     DFAMinimizer dfa_minimizer(dfa_state);
     dfa_minimizer.minimize();
-    // dfa_gen.print_dfa(dfa_state);
+    dfa_gen.print_dfa(dfa_state);
+    cout<<"*****************************************"<<endl<<endl;
 
     cout << "Decoding\n";
     int line_number = 0;
     while(getline(input_file, input)) {
         line_number++;
-        cout << "Input: " << input << endl;
+        // cout << "Input: " << input << endl;
         if(input.size() >= 2 and input[0] == '/' and input[1] == '/') {
-            cout << "Skipping Comment\n";
+            // cout << "Skipping Comment\n";
             continue;
         }
 
@@ -59,7 +60,13 @@ int main(int, char**){
 
         pair<string, string> token;
         while((token = dfa_decoder.next_token()).first != "") {
-            cout << token.first << ": " << token.second << endl;
+            // cout << token.first << ": " << token.second << endl;
+            if(token.first[0] == 'p'){
+                cout << token.second << endl;
+            }
+            else{
+                cout << token.first << endl;
+            }
         }
     }    
 }

@@ -14,14 +14,17 @@ private:
     unordered_map<char, DFAState*> transitions;
     string acc_state_def;
 public:
+    bool isDead;
     DFAState(int id){
         state_id = id;
+        isDead = false;
         acc_state_def = "";
     }
     void kill_state(unordered_set<char> possible_inputs){
         for(char input: possible_inputs){
             transitions[input] = this;
         }
+        isDead = true;
     }
     void combine_states_outputs(DFAState* state){
         for(auto& transition: state->get_transitions()){
