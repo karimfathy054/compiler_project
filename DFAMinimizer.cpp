@@ -42,8 +42,8 @@ class DFAMinimizer {
             if(final_states.find(first_state) == final_states.end() && final_states.find(second_state) != final_states.end()){
                 return true;
             }
-            if(final_states.find(first_state) != final_states.end() && final_states.find(second_state) != final_states.end() && first_state->get_acc_state_def() == second_state->get_acc_state_def()){
-                return false;
+            if(final_states.find(first_state) != final_states.end() && final_states.find(second_state) != final_states.end() && first_state->get_acc_state_def() != second_state->get_acc_state_def()){
+                return true;
             }
             return false;
         }
