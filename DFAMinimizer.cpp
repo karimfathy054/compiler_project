@@ -38,7 +38,12 @@ class DFAMinimizer {
 
         void minimize(){
             // construct the n^2 table
-            bool table[id_state_map.size()][id_state_map.size()] = {false};
+            bool table[id_state_map.size()][id_state_map.size()];
+            for (int i=0;i<id_state_map.size();i++){
+                for(int j=0;j<id_state_map.size();j++){
+                    table[i][j] = false;
+                }
+            }
             // mark all final states with other non final states
             for(int i=0;i<id_state_map.size();i++){
                 for(int j=0;j<i;j++){
