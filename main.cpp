@@ -7,6 +7,7 @@
 #include "DFA.cpp"
 #include "DFADecoder.cpp"
 #include "DFAMinimizer.cpp"
+#include "DFAMinimizer2.cpp"
 
 // Test the lexical analyzer using the rules in the file "test.txt"
 // this example from Lecture 4 (Dr pdfs) 
@@ -40,8 +41,12 @@ int main(int, char**){
     DFAState* dfa_state = dfa_gen.generateDFA(nfa, rules, r.get_possible_inputs());
     DFAState::print_dfa(dfa_file_path, dfa_state);
     cout << "Minimizing DFA...\n";
-    DFAMinimizer dfa_minimizer(dfa_state);
-    dfa_minimizer.minimize();
+    // DFAMinimizer dfa_minimizer(dfa_state);
+    // dfa_minimizer.minimize();
+
+    DFAMinimizer2 dfa_minimizer2(dfa_state);
+    dfa_state = dfa_minimizer2.minimize();
+
     dfa_state->check_all_is_dead();
 
     // print the dfa states in dfa.txt
