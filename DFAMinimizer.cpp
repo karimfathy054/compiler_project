@@ -114,9 +114,12 @@ class DFAMinimizer {
             for(auto& state: id_state_map){
                 for(auto& transition: state.second->get_transitions()){
                     DFAState* next_state = transition.second;
-                    if(next_state->get_state_id() != state_id_map[next_state]){
-                        state.second->get_transitions()[transition.first] = new_state_map[next_state];
+                    if(new_state_map.find(next_state) != new_state_map.end()){ //assumming pointers are unique and no surprises happen
+                        state.second->set_transition(transition.first,new_state_map[next_state]);
                     }
+                    // if(next_state->get_state_id() != state_id_map[next_state]){
+                    //     state.second->get_transitions()[transition.first] = new_state_map[next_state];
+                    // }
                 }
             }
 
