@@ -12,10 +12,12 @@
 // Test the lexical analyzer using the rules in the file "test.txt"
 // this example from Lecture 4 (Dr pdfs) 
 int main(int, char**){
-    string input_file_path = "../../../input.txt";
-    string rules_file_path = "../../../lexical rules.txt";
-    string dfa_file_path = "../../../dfa.txt";
-    string output_file_path = "../../../output.txt";
+    string input_file_path = "../input.txt";
+    string rules_file_path = "../lexical rules.txt";
+    string dfa_file_path = "../dfa.txt";
+    string output_file_path = "../output.txt";
+    string symbol_table_file_path = "../symbol_table.txt";
+
     unordered_map<string, string> symbol_table;
     string input;
     ifstream input_file(input_file_path);
@@ -34,13 +36,13 @@ int main(int, char**){
     cout << "Generating NFA...\n";
     NFAGenerator nfa_gen;
     NFA* nfa = nfa_gen.generateNFA(rules);
-    nfa_gen.print_nfa(nfa);
 
     cout << "Generating DFA...\n";
     DFAGenerator dfa_gen;
     DFAState* dfa_state = dfa_gen.generateDFA(nfa, rules, r.get_possible_inputs());
     DFAState::print_dfa(dfa_file_path, dfa_state);
     cout << "Minimizing DFA...\n";
+
     // DFAMinimizer dfa_minimizer(dfa_state);
     // dfa_minimizer.minimize();
 
@@ -51,7 +53,7 @@ int main(int, char**){
 
     // print the dfa states in dfa.txt
     // DFAState::print_dfa(dfa_file_path, dfa_state);
-    DFAState::print_dfa("../../../minDfa.txt", dfa_state);
+    DFAState::print_dfa(dfa_file_path, dfa_state);
 
     cout << "Decoding...\n";
 
@@ -102,5 +104,19 @@ int main(int, char**){
         output_file << DFADecoder(dfa_state, "", line_number).next_token().first;
     }
     output_file.close();
+
+    cout << "Writing Symbol Table...\n";
+
+    ofstream symbol_table_file(symbol_table_file_path);
+    if(!symbol_table_file.is_open()) {
+        cerr << "Unable to open file: " << symbol_table_file_path << endl;
+        return 0;
+    }
+
+    for(auto& [token, value]: symbol_table) {
+        symbol_table_file << value << " " << token << "\n";
+    }
+
+    symbol_table_file.close();
     cout << "Done.";
 }
