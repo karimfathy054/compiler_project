@@ -11,11 +11,11 @@
 // Test the lexical analyzer using the rules in the file "test.txt"
 // this example from Lecture 4 (Dr pdfs) 
 int main(int, char**){
-    string input_file_path = "../input.txt";
-    string rules_file_path = "../lexical rules.txt";
-    string dfa_file_path = "../dfa.txt";
-    string output_file_path = "../output.txt";
-
+    string input_file_path = "./input.txt";
+    string rules_file_path = "./lexical rules.txt";
+    string dfa_file_path = "./dfa.txt";
+    string output_file_path = "./output.txt";
+    unordered_map<string, string> symbol_table;
     string input;
     ifstream input_file(input_file_path);
     
@@ -33,19 +33,20 @@ int main(int, char**){
     cout << "Generating NFA...\n";
     NFAGenerator nfa_gen;
     NFA* nfa = nfa_gen.generateNFA(rules);
+    nfa_gen.print_nfa(nfa);
 
     cout << "Generating DFA...\n";
     DFAGenerator dfa_gen;
     DFAState* dfa_state = dfa_gen.generateDFA(nfa, rules, r.get_possible_inputs());
-
+    DFAState::print_dfa(dfa_file_path, dfa_state);
     cout << "Minimizing DFA...\n";
     DFAMinimizer dfa_minimizer(dfa_state);
     dfa_minimizer.minimize();
-
     dfa_state->check_all_is_dead();
 
     // print the dfa states in dfa.txt
-    DFAState::print_dfa(dfa_file_path, dfa_state);
+    // DFAState::print_dfa(dfa_file_path, dfa_state);
+    DFAState::print_dfa("./minDfa.txt", dfa_state);
 
     cout << "Decoding...\n";
 
@@ -80,6 +81,7 @@ int main(int, char**){
                     output_file << token.second;
                 }
                 else{
+                    symbol_table[token.second] = token.first;
                     output_file << token.first;
                 }
                 output_file << "\n";
