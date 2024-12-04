@@ -1,6 +1,6 @@
 #include "DFAState.cpp"
 
-class DFAMinimizer2 {
+class DFAMinimizerPartitioning {
 private:
     DFAState* start_state;
     vector<DFAState*> all_states;
@@ -37,7 +37,7 @@ private:
         return acc_states;
     }
 public:
-    DFAMinimizer2(DFAState* start_state) {
+    DFAMinimizerPartitioning(DFAState* start_state) {
         this->start_state = start_state;
         this->all_states = get_all_states(start_state);
     }

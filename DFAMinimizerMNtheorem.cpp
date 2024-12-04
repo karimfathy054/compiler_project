@@ -5,14 +5,14 @@
 #include <algorithm>
 #include "DFAState.cpp"
 using namespace std;
-class DFAMinimizer {
+class DFAMinimizerMNtheorem {
     private:
         unordered_map<int,DFAState*> id_state_map;
         unordered_map<DFAState*,int> state_id_map;
         unordered_set<DFAState*> final_states;
         
     public:
-        DFAMinimizer(DFAState* start_state) {
+        DFAMinimizerMNtheorem(DFAState* start_state) {
             queue<DFAState*> q;
             unordered_set<DFAState*> visited;
             q.push(start_state);
