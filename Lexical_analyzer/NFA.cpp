@@ -1,6 +1,7 @@
+#pragma once
+
 #include "State.cpp"
 class NFA{
-    //TODO: initialize the state_id_counter in main
     private:
         static int state_id_counter; 
         State* start_state;

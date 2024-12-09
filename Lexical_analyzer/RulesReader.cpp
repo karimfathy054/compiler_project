@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <fstream>
 #include <vector>
@@ -166,7 +168,11 @@ private:
             all_rules.push_back ({k, k + string(k.size()-1, '~')});
         }
         for(string p:punctuations){
-            all_rules.push_back({"p_" + to_string(p.size()-1), p});
+            if(p[0] == '\\'){
+                all_rules.push_back({p.substr(1,p.size()-1), p});
+            }else{
+                all_rules.push_back({p, p});
+            }
         }
         for (int i = 0; i < rules.size(); i++)
         {
@@ -243,6 +249,7 @@ public:
         process_definitions();
         process_rules();
         generate_all_rules();
+        rulesFile.close();
     }
    
     vector<pair<string, string>> get_all_rules()
