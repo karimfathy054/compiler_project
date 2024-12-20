@@ -5,12 +5,12 @@
 
 using namespace std;
 
-class GrammerReader{
+class GrammarReader{
     private:
     vector<Symbol*> nonTerminals;
-    vector<vector<Symbol*>*> productions;
+    vector<Production*> productions;
     public:
-    GrammerReader(string grammerFilePath); //read grammer from file and fill nonTerminals and productions
+    GrammarReader(string grammerFilePath); //read grammer from file and fill nonTerminals and productions
     vector<Symbol*> getNonTerminals();
     vector<vector<Symbol*>*> getProductions();
 };

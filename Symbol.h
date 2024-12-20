@@ -8,7 +8,7 @@ using namespace std;
 class Production{
     private:
     string production_string;
-    vector<Symbol*> production;
+    vector<Symbol*> production_symbols;
     public:
     Production(string production_string, vector<Symbol*> production);
     vector<Symbol*> getProduction();
