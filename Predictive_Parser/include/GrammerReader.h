@@ -5,26 +5,23 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include "Production.h"
 
-#define LETF_TERM '<'
-#define RIGHT_TERM '>'
+#define LETF_TERM '\''
+#define RIGHT_TERM '\''
 
 class GrammarReader {
 public:
-    struct Production {
-        std::string lhs;
-        std::vector<std::string> rhs;
-    };
 
     GrammarReader(std::string filepath);
-    std::vector<Production> getProductions();
+    std::vector<Production*> getProductions();
     void displayProductions();
 
 private:
     int i;
     std::ifstream file;
     std::string cur_line;
-    std::vector<Production> productions;
+    std::vector<Production*> productions;
 
     void readGrammer();
     bool is_special(char ch);

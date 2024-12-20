@@ -11,13 +11,13 @@ GrammarReader::GrammarReader(string filepath) {
     }
     readGrammer();
 }
- vector<GrammarReader::Production> GrammarReader::getProductions() {
+ vector<Production*> GrammarReader::getProductions() {
     return productions;
 }
 void GrammarReader::displayProductions() {
     for(auto production : productions) {
-        cout << production.lhs << " -> ";
-        for(auto rhs : production.rhs) {
+        cout << production->getLhs() << " -> ";
+        for(auto rhs : production->getRhs()) {
             cout << rhs << " ";
         }
         cout << endl;
@@ -26,8 +26,8 @@ void GrammarReader::displayProductions() {
 
 void GrammarReader::readGrammer() {
     string token;
-    string nt_name;
-    string lhs_string;
+
+    Production* production;
 
     token = next_token();
     if(token != "#") {
@@ -35,8 +35,8 @@ void GrammarReader::readGrammer() {
     }
 
     while((token = next_token()) != "") {
-        nt_name = token;
-        vector<string> rhs;
+        production = new Production(token, {});
+
         token = next_token();
         if(token != "=") {
             throw runtime_error("Expected =");
@@ -45,14 +45,14 @@ void GrammarReader::readGrammer() {
         while((token = next_token()) != "") {
             if(token == "#") break;
             if(token == "|") {
-                productions.push_back({nt_name, rhs});
-                rhs.clear();
+                productions.push_back(production);
+                production = new Production(production->getLhs(), {});
                 continue;
             }
-            rhs.push_back(token);
+            production->addRhs(token);
         }
-        if(rhs.size() > 0) {
-            productions.push_back({nt_name, rhs});
+        if(production->getRhs().size() > 0) {
+            productions.push_back(production);
         }
     }
 }
@@ -109,7 +109,7 @@ string GrammarReader::get_word() {
 
 int main() {
     try {
-        std::string filePath = "ll_grammar.txt"; // Replace with the path to your grammar file
+        std::string filePath = "../../ll_grammar.txt"; // Replace with the path to your grammar file
         GrammarReader parser(filePath);
         parser.displayProductions();
     } catch (const std::exception& e) {
