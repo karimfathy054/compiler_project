@@ -26,6 +26,16 @@
 int main(){
     GrammarReader reader("/home/karim/compiler_project/Grammar.txt");
     vector<Symbol*> nonTerminals = reader.getNonTerminals();
-    
+    cout << "Non Terminals" << endl;
+    for(Symbol* s : nonTerminals){
+        cout << s->terminal_string << endl;
+    }
+    cout << "--------------------------------" << endl;
+    cout << "Terminals" << endl;
+    vector<Symbol*> terminals = reader.getTerminals();
+    for (Symbol *s : terminals)
+    {
+        cout << s->terminal_string << endl;
+    }
     return 0;
 }

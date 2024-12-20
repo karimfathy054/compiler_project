@@ -2,9 +2,8 @@
 #include <fstream>
 #include <regex>
 #include <iostream>
-#include <unordered_map>
 
-vector<Symbol *> symbols_from_string(string s, unordered_map<string, Symbol *> nonTerminals, unordered_map<string, Symbol *> terminals)
+vector<Symbol *> GrammarReader::symbols_from_string(string s, unordered_map<string, Symbol *> &nonTerminals, unordered_map<string, Symbol *> &terminals)
 {
     vector<Symbol *> symbols;
     istringstream iss(s);
@@ -20,6 +19,7 @@ vector<Symbol *> symbols_from_string(string s, unordered_map<string, Symbol *> n
                 Symbol *sym = new Symbol(true, temp);
                 terminals[temp] = sym;
                 symbols.push_back(sym);
+                this->terminals.push_back(sym);
             }
             else
             {
@@ -113,7 +113,7 @@ GrammarReader::GrammarReader(string grammerFilePath)
             }
             this->nonTerminals.push_back(rule_nonTerminal);
 
-            cout << lhs << " ::= " << rhs << endl;
+            // cout << lhs << " ::= " << rhs << endl;
         }
     }
 }
@@ -121,4 +121,9 @@ GrammarReader::GrammarReader(string grammerFilePath)
 vector<Symbol *> GrammarReader::getNonTerminals()
 {
     return this->nonTerminals;
+}
+
+vector<Symbol *> GrammarReader::getTerminals()
+{
+    return this->terminals;
 }
