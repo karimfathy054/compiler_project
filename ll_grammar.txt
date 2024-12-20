@@ -8,15 +8,6 @@ STATEMENT# STATEMENT = DECLARATION
 # PRIMITIVE_TYPE = 'int' | 'float'
 # IF = 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT
 
-
-
-
-
-
-
-
-
-
                       '}'# WHILE = 'while' '(' EXPRESSION ')' '{' STATEMENT '}'
 # ASSIGNMENT = 'id' '=' EXPRESSION
 ';'# EXPRESSION =

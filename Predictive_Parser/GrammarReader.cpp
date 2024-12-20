@@ -15,10 +15,12 @@ GrammarReader::GrammarReader(string filepath) {
     return productions;
 }
 void GrammarReader::displayProductions() {
-    for(auto production : productions) {
-        cout << production->getLhs() << " -> ";
-        for(auto rhs : production->getRhs()) {
-            cout << rhs << " ";
+    for(Production* production : productions) {
+        cout << production->getLhs()->getName() 
+        << (production->getLhs()->getIsTerminal()? "(T)": "(NT)")
+        << " -> ";
+        for(Symbol* rhs : production->getRhs()) {
+            cout << rhs->getName() << (rhs->getIsTerminal()? "(T)": "(NT)") << " ";
         }
         cout << endl;
     }
@@ -26,7 +28,6 @@ void GrammarReader::displayProductions() {
 
 void GrammarReader::readGrammer() {
     string token;
-
     Production* production;
 
     token = next_token();
@@ -35,7 +36,10 @@ void GrammarReader::readGrammer() {
     }
 
     while((token = next_token()) != "") {
-        production = new Production(token, {});
+        Symbol* lhs = getSymbol(token);
+        lhs->setIsTerminal(false);
+        production = new Production(lhs, {});
+        
 
         token = next_token();
         if(token != "=") {
@@ -49,7 +53,7 @@ void GrammarReader::readGrammer() {
                 production = new Production(production->getLhs(), {});
                 continue;
             }
-            production->addRhs(token);
+            production->addRhs(getSymbol(token));
         }
         if(production->getRhs().size() > 0) {
             productions.push_back(production);
@@ -76,13 +80,13 @@ string GrammarReader::next_token() {
         return "";
     }
     if(word[0] == LETF_TERM) {
-        string next = get_word();
+        word = get_word();
         string right_terminal_sympol = get_word();
         if(right_terminal_sympol == "" or right_terminal_sympol[0] != RIGHT_TERM) {
             throw runtime_error("Expected " + string(1, RIGHT_TERM));
         }
-        return next;
     }
+    cout << word << endl;
     return word;
 
 }
@@ -105,6 +109,13 @@ string GrammarReader::get_word() {
     }
     remove_spaces();
     return word;
+}
+
+Symbol* GrammarReader::getSymbol(string name) {
+    if(symbols.find(name) == symbols.end()) {
+        symbols[name] = new Symbol(name);
+    }
+    return symbols[name];
 }
 
 int main() {
