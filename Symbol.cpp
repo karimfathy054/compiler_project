@@ -36,5 +36,17 @@ bool Symbol::isEpsilon(){
     return this->isTerminal && this->terminal_string == EPSILON;
 }
 
+Production::Production(string production_string, vector<Symbol*> production){
+    this->production_string = production_string;
+    this->production_symbols = production;
+}
+
+vector<Symbol*> Production::getProduction(){
+    return this->production_symbols;
+}
+
+string Production::getProductionString(){
+    return this->production_string;
+}
 
 

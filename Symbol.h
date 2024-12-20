@@ -1,26 +1,32 @@
 #pragma once
 #include <string>
 #include <vector>
-#define EPSILON "\L"
+#define EPSILON "\\L"
 
 using namespace std;
 
-class Production{
-    private:
+class Symbol;
+
+class Production
+{
+private:
     string production_string;
-    vector<Symbol*> production_symbols;
-    public:
-    Production(string production_string, vector<Symbol*> production);
-    vector<Symbol*> getProduction();
+    vector<Symbol *> production_symbols;
+
+public:
+    Production(string production_string, vector<Symbol *> production);
+    vector<Symbol *> getProduction();
     string getProductionString();
 };
 
-class Symbol{
-    public:
+class Symbol
+{
+public:
     bool isTerminal;
     string terminal_string;
     vector<Production> productions;
-    public:
+
+public:
     Symbol(bool isTerminal, string terminal_string);
     Symbol(vector<Production> productions);
     void addProduction(Production production);
