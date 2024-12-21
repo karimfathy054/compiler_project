@@ -1,4 +1,4 @@
-#include "include/GrammerReader.h"
+#include "include/GrammarReader.h"
 
 using namespace std;
 
@@ -86,7 +86,7 @@ string GrammarReader::next_token() {
             throw runtime_error("Expected " + string(1, RIGHT_TERM));
         }
     }
-    cout << word << endl;
+    // cout << word << endl;
     return word;
 
 }
@@ -101,6 +101,10 @@ string GrammarReader::get_word() {
         string word = string(1, cur_line[i++]);
         remove_spaces();
         return word;
+    }
+    if(i+1 < cur_line.size() and cur_line[i] == '\\' and cur_line[i+1] == 'L') {
+        i+=2;
+        return EPSILON;
     }
     string word = "";
     while(i < cur_line.size() && !is_special(cur_line[i]) && cur_line[i] != ' ') {
@@ -118,14 +122,18 @@ Symbol* GrammarReader::getSymbol(string name) {
     return symbols[name];
 }
 
-int main() {
-    try {
-        std::string filePath = "../../ll_grammar.txt"; // Replace with the path to your grammar file
-        GrammarReader parser(filePath);
-        parser.displayProductions();
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
-
-    return 0;
+std::unordered_map<std::string, Symbol*> GrammarReader::getSymbols() {
+    return symbols;
 }
+
+// int main() {
+//     try {
+//         std::string filePath = "../../ll_grammar.txt"; // Replace with the path to your grammar file
+//         GrammarReader parser(filePath);
+//         parser.displayProductions();
+//     } catch (const std::exception& e) {
+//         std::cerr << "Error: " << e.what() << std::endl;
+//     }
+
+//     return 0;
+// }

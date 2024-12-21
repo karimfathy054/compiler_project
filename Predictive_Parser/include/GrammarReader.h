@@ -1,5 +1,5 @@
-#ifndef GRAMMERREADER_H
-#define GRAMMERREADER_H
+#ifndef GRAMMARREADER_H
+#define GRAMMARREADER_H
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -17,6 +17,7 @@ public:
     GrammarReader(std::string filepath);
     std::vector<Production*> getProductions();
     void displayProductions();
+    std::unordered_map<std::string, Symbol*> getSymbols();
 private:
     int i;
     std::ifstream file;

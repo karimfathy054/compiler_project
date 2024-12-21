@@ -1,9 +1,8 @@
-#include "include/GrammerReader.h"
+#include "include/GrammarReader.h"
 
 class PredictiveParserGen {
 public:
     PredictiveParserGen() {
-        GrammarReader reader("ll_grammar.txt");
-        std::vector<GrammarReader::Production> productions = reader.getProductions();
+        
     }
 };

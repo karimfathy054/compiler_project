@@ -16,4 +16,4 @@ class InputParser{
     
 };
 
-#endif // INPUTPARSER_H
+#endif

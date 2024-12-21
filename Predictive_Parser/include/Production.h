@@ -13,6 +13,7 @@ public:
     void setLhs(Symbol* lhs);
     void setRhs(std::vector<Symbol*> rhs);
     void addRhs(Symbol* rhs);
+    void displayProduction();
 private:
     Symbol* lhs;
     std::vector<Symbol*> rhs;

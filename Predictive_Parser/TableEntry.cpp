@@ -5,6 +5,11 @@ TableEntry::TableEntry(){
     this->production = nullptr;
 }
 
+TableEntry::TableEntry(bool isSync) {
+    this->isSync = isSync;
+    this->production = nullptr;
+}
+
 TableEntry::TableEntry(Production *production){
     this->isSync = false;
     this->production = production;
