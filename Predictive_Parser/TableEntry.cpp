@@ -1,7 +1,7 @@
 #include "include/TableEntry.h"
 
 TableEntry::TableEntry(){
-    this->isSync = true;
+    this->isSync = false;
     this->production = nullptr;
 }
 

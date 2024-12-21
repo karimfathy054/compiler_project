@@ -76,7 +76,7 @@ string lexical_analyzer::next_token()
     }
     else if (end_reached)
     {
-        return "%%";
+        return "$$";
     }
     else
     {

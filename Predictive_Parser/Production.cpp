@@ -32,4 +32,5 @@ void Production::displayProduction() {
     for (int i = 0; i < rhs.size(); i++) {
         std::cout << rhs[i]->getName() << " ";
     }
+    std::cout << std::endl;
 }
