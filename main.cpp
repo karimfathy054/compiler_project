@@ -1,5 +1,5 @@
 // #include "lexica.cpp"
-#include "include/GrammerReader.h"
+#include "include/GrammarReader.h"
 #include "include/TableEntry.h"
 #include "lexica.h"
 #include "input_parser.h"

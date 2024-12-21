@@ -1,6 +1,6 @@
 #ifndef INPUT_PARSER_H
 #define INPUT_PARSER_H
-#include "include/GrammerReader.h"
+#include "include/GrammarReader.h"
 #include "include/TableEntry.h"
 #include "lexica.h"
 #include <vector>

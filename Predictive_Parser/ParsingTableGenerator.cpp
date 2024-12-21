@@ -232,7 +232,7 @@ void test2(
 }
 
 int main() {
-    GrammarReader parser("../../ll_grammar.txt");
+    GrammarReader parser("/home/karim/compiler_project/ll_grammar.txt");
     vector<Production*> productions = parser.getProductions();
     cout << "Done productions\n";
     unordered_map<string, Symbol*> symbols = parser.getSymbols();
