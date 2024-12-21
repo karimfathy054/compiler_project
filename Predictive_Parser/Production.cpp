@@ -1,3 +1,4 @@
+#include <iostream>
 #include "include/Production.h"
 
 
@@ -24,4 +25,11 @@ void Production::setRhs(std::vector<Symbol*> rhs) {
 
 void Production::addRhs(Symbol* rhs) {
     this->rhs.push_back(rhs);
+}
+
+void Production::displayProduction() {
+    std::cout << lhs->getName() << " -> ";
+    for (int i = 0; i < rhs.size(); i++) {
+        std::cout << rhs[i]->getName() << " ";
+    }
 }
