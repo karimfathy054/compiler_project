@@ -1,4 +1,4 @@
-#include "compiler.h"
+#include "Compiler.h"
 #include <iostream>
 
 using namespace std;
