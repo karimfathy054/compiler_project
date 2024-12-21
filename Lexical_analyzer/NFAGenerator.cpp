@@ -9,7 +9,7 @@
 #include "NFA.cpp"
 
 using namespace std;
-int NFA::state_id_counter = 0;
+inline int NFA::state_id_counter = 0;
 class NFAGenerator{
     
 public:
