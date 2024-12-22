@@ -1,4 +1,4 @@
-#include "compiler.h"
+#include "Compiler.h"
 #include <iostream>
 
 using namespace std;
@@ -22,83 +22,105 @@ void Compiler::read_grammar() {
     grammar_reader = GrammarReader(grammar_file_path);
     productions = grammar_reader.getProductions();
 
-    symbols = grammar_reader.getSymbols();
-    symbols[END_OF_INPUT] = new Symbol(END_OF_INPUT);
+    LL_Grammar ll_grammar(productions);
 
+    ll_grammar.convert_to_LL_grammmar();
+
+    productions = ll_grammar.getProductions();
+
+    symbols = ll_grammar.getSymbols();
     starting_symbol = grammar_reader.getStartSymbol();
     
-    for(auto &[_, symbol]: symbols) {
-        if(not symbol->getIsTerminal()) non_terminal_symbols.insert(symbol);
-    }
+    non_terminal_symbols = ll_grammar.getNonTerminalSymbols();
+
 }
 
 
-// todo
 void Compiler::compute_first_follow_sets() {
-    // E -> T E'
-    first.push_back({
-        symbols["id"],
-        symbols["("]
-    });
-    // E' -> + T E'
-    first.push_back({
-        symbols["+"]
-    });
-    // E' -> \L
-    first.push_back({
-        symbols["\\L"]
-    });
-    // T -> F T'
-    first.push_back({
-        symbols["id"],
-        symbols["("]
-    });
-    // T' -> * F T'
-    first.push_back({
-        symbols["*"]
-    });
-    // T' -> \L
-    first.push_back({
-        symbols["\\L"]
-    });
-    // F -> ( E )
-    first.push_back({
-        symbols["("]
-    });
-    // F -> id
-    first.push_back({
-        symbols["id"]
-    });
-    // E
-    follow[symbols["E"]] = {
-        symbols[")"],
-        symbols[END_OF_INPUT]
-    };
-    // E'
-    follow[symbols["Ed"]] = {
-        symbols[")"],
-        symbols[END_OF_INPUT]
-    };
-    // T
-    follow[symbols["T"]] = {
-        symbols["+"],
-        symbols[")"],
-        symbols[END_OF_INPUT]
-    };
-    // T'
-    follow[symbols["Td"]] = {
-        symbols["+"],
-        symbols[")"],
-        symbols[END_OF_INPUT]
-    };
-    // F
-    follow[symbols["F"]] = {
-        symbols["*"],
-        symbols["+"],
-        symbols[")"],
-        symbols[END_OF_INPUT]
-    };
+    first.push_back({symbols["not"],symbols["("],symbols["true"],symbols["false"]});
+    first.push_back({symbols["or"]});
+    first.push_back({symbols["\\L"]});
+    first.push_back({symbols["not"],symbols["("],symbols["true"],symbols["false"]});
+    first.push_back({symbols["and"]});
+    first.push_back({symbols["\\L"]});
+    first.push_back({symbols["not"]});
+    first.push_back({symbols["("]});
+    first.push_back({symbols["true"]});
+    first.push_back({symbols["false"]});
+
+    follow[symbols["bexpr"]] = {symbols[END_OF_INPUT],symbols[")"]};
+    follow[symbols["bexpr\'"]] = {symbols[END_OF_INPUT],symbols[")"]};
+    follow[symbols["bterm"]] = {symbols[END_OF_INPUT],symbols[")"],symbols["or"]};
+    follow[symbols["bterm\'"]] = {symbols[END_OF_INPUT],symbols[")"],symbols["or"]};
+    follow[symbols["bfactor"]] = {symbols[END_OF_INPUT],symbols[")"],symbols["or"],symbols["and"]};
 }
+
+// // todo
+// void Compiler::compute_first_follow_sets() {
+//     // E -> T E'
+//     first.push_back({
+//         symbols["id"],
+//         symbols["("]
+//     });
+//     // E' -> + T E'
+//     first.push_back({
+//         symbols["+"]
+//     });
+//     // E' -> \L
+//     first.push_back({
+//         symbols["\\L"]
+//     });
+//     // T -> F T'
+//     first.push_back({
+//         symbols["id"],
+//         symbols["("]
+//     });
+//     // T' -> * F T'
+//     first.push_back({
+//         symbols["*"]
+//     });
+//     // T' -> \L
+//     first.push_back({
+//         symbols["\\L"]
+//     });
+//     // F -> ( E )
+//     first.push_back({
+//         symbols["("]
+//     });
+//     // F -> id
+//     first.push_back({
+//         symbols["id"]
+//     });
+//     // E
+//     follow[symbols["E"]] = {
+//         symbols[")"],
+//         symbols[END_OF_INPUT]
+//     };
+//     // E'
+//     follow[symbols["Ed"]] = {
+//         symbols[")"],
+//         symbols[END_OF_INPUT]
+//     };
+//     // T
+//     follow[symbols["T"]] = {
+//         symbols["+"],
+//         symbols[")"],
+//         symbols[END_OF_INPUT]
+//     };
+//     // T'
+//     follow[symbols["Td"]] = {
+//         symbols["+"],
+//         symbols[")"],
+//         symbols[END_OF_INPUT]
+//     };
+//     // F
+//     follow[symbols["F"]] = {
+//         symbols["*"],
+//         symbols["+"],
+//         symbols[")"],
+//         symbols[END_OF_INPUT]
+//     };
+// }
 
 
 void Compiler::compute_parsing_table() {
@@ -192,7 +214,9 @@ void Compiler::remaining_input() {
 }
 
 void Compiler::display_productions() {
-    grammar_reader.displayProductions();
+    for(auto &p : productions){
+        p->displayProduction();
+    }
 }
 
 void Compiler::display_symbols() {

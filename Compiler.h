@@ -1,10 +1,11 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include "Predictive_Parser/include/GrammarReader.h"
-#include "Predictive_Parser/include/ParsingTableGenerator.h"
-#include "Predictive_Parser/include/TableEntry.h"
-#include "Lexical_analyzer/include/lexica.h"
+#include "include/GrammarReader.h"
+#include "include/ParsingTableGenerator.h"
+#include "include/TableEntry.h"
+#include "include/lexica.h"
+#include "include/LL_Grammar.h"
 #include <vector>
 #include <unordered_map>
 #include <string>
