@@ -20,11 +20,20 @@ Lexical_analyzer::Lexical_analyzer(string rules_file_path, string input_file_pat
     this->rules_file_path = rules_file_path;
     this->input_file_path = input_file_path;
     this->input_file.open(input_file_path);
+    if(!input_file.is_open())
+    {
+        cerr << "Error: input file not found" << endl;
+        exit(1);
+    }
     this->symbol_table = new unordered_map<string, string>();
     prepare_dfa(rules_file_path);
 }
 string Lexical_analyzer::next_token()
 {
+    if(input_file.eof())
+    {
+        return END_OF_INPUT;
+    }
     string lexeme = "";
     string last_accepeted_token = "";
     int last_accepeted_index = 0;
@@ -75,7 +84,7 @@ string Lexical_analyzer::next_token()
     }
     else if (end_reached)
     {
-        return "$$";
+        return END_OF_INPUT;
     }
     else
     {

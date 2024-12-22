@@ -23,7 +23,7 @@ void Compiler::read_grammar() {
     productions = grammar_reader.getProductions();
 
     symbols = grammar_reader.getSymbols();
-    symbols["$"] = new Symbol("$");
+    symbols[END_OF_INPUT] = new Symbol(END_OF_INPUT);
 
     starting_symbol = grammar_reader.getStartSymbol();
     
@@ -72,31 +72,31 @@ void Compiler::compute_first_follow_sets() {
     // E
     follow[symbols["E"]] = {
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // E'
     follow[symbols["Ed"]] = {
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // T
     follow[symbols["T"]] = {
         symbols["+"],
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // T'
     follow[symbols["Td"]] = {
         symbols["+"],
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // F
     follow[symbols["F"]] = {
         symbols["*"],
         symbols["+"],
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
 }
 
@@ -121,7 +121,7 @@ string Compiler::next_token_wrapper()
 }
 
 void Compiler::parse_input() {
-    Symbol *program_end = new Symbol("$$");
+    Symbol *program_end = new Symbol(END_OF_INPUT);
     program_end->setIsTerminal(true);
 
     stack<Symbol *> st;
@@ -164,38 +164,31 @@ void Compiler::parse_input() {
             {
                 st.pop();
                 vector<Symbol *> rhs = entry->getProduction()->getRhs();
-                cout << entry->getProduction()->getLhs()->getName() << " -> ";
+                entry->getProduction()->displayProduction();
+                cout << endl;
+
+                if(rhs[0]->getName() == "\\L") continue;
 
                 for (int i = rhs.size() - 1; i >= 0; i--)
                 {
                     st.push(rhs[i]);
                 }
-                for (Symbol *s : rhs)
-                {
-                    cout << s->getName() << " ";
-                }
-                cout << endl;
             }
         }
     }
 }
 
 void Compiler::remaining_input() {
-    cout << "*********************" << endl;
-    cout << "Remaining input" << endl;
-    while (true)
-    {
-        string token = lexical_analyzer.next_token();
-        if (token == "$$")
-        {
-            break;
-        }
-        if (token == "whitespace")
-        {
-            continue;
-        }
-        cout << token << endl;
+    string token = lexical_analyzer.next_token();
+    if(token == END_OF_INPUT) {
+        return;
     }
+    cout << "*************************" << endl;
+    cout << "Remaining unmatched input" << endl;
+    do {
+        cout << token << endl;
+        token = lexical_analyzer.next_token();
+    } while(token != END_OF_INPUT);
 }
 
 void Compiler::display_productions() {

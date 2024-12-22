@@ -3,19 +3,19 @@
 #include <vector>
 using namespace std;
 int main() {
-    Compiler compiler(
-        "../omar_test_input/rules.txt", 
-        "../omar_test_input/grammar.txt",
-        "../omar_test_input/input.txt"
-    );
+    string rules_file_path = "../omar_test_input/rules.txt";
+    string grammar_file_path = "../omar_test_input/grammar.txt";
+    string input_file_path = "../omar_test_input/input.txt";
+    Compiler compiler(rules_file_path, grammar_file_path, input_file_path);
     cout << "Productions...\n";
     compiler.display_productions();
     cout << "Table...\n";
     compiler.display_table();
     cout << "Result...\n";
     compiler.parse_input();
-    cout << "Remaining...\n";
+    
     compiler.remaining_input();
+    cout << "Done\n";
     return 0;
 }
 
@@ -56,28 +56,28 @@ int main()
 
     table[E]["id"] = TableEntry(p1);
     table[E]["("] = TableEntry(p1);
-    table[E]["$$"] = new TableEntry(true);
+    table[E][END_OF_INPUT] = new TableEntry(true);
     table[E][")"] = new TableEntry(true);
     table[X]["add"] = TableEntry(p2);
-    table[X]["$$"] = TableEntry(p3);
+    table[X][END_OF_INPUT] = TableEntry(p3);
     table[X][")"] = TableEntry(p3);
     table[T]["id"] = TableEntry(p4);
     table[T]["("] = TableEntry(p4);
-    table[T]["$$"] = new TableEntry(true);
+    table[T][END_OF_INPUT] = new TableEntry(true);
     table[T][")"] = new TableEntry(true);
     table[T]["add"] = new TableEntry(true);
     table[Y]["mul"] = TableEntry(p5);
-    table[Y]["$$"] = TableEntry(p6);
+    table[Y][END_OF_INPUT] = TableEntry(p6);
     table[Y][")"] = TableEntry(p6);
     table[Y]["add"] = TableEntry(p6);
     table[F]["id"] = TableEntry(p8);
     table[F]["("] = TableEntry(p7);
-    table[F]["$$"] = new TableEntry(true);
+    table[F][END_OF_INPUT] = new TableEntry(true);
     table[F][")"] = new TableEntry(true);
     table[F]["mul"] = new TableEntry(true);
     table[F]["add"] = new TableEntry(true);
 
-    Symbol *program_end = new Symbol("$$");
+    Symbol *program_end = new Symbol(END_OF_INPUT);
     program_end->setIsTerminal(true);
     stack<Symbol *> st;
     st.push(program_end);
@@ -90,7 +90,7 @@ int main()
     while (true)
     {
         string token = lex.next_token();
-        if (token == "$$")
+        if (token == END_OF_INPUT)
         {
             break;
         }
@@ -155,14 +155,14 @@ void test1(
     cout << "Followtin\n";
     // S
     follow[symbols["S"]] = {
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // R
     follow[symbols["R"]] = {
         symbols["v"],
         symbols["t"],
         symbols["b"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // U
     follow[symbols["U"]] = {
@@ -175,7 +175,7 @@ void test1(
     };
     // T
     follow[symbols["T"]] = {
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
 }
 
@@ -223,31 +223,31 @@ void test2(
     // E
     follow[symbols["E"]] = {
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // E'
     follow[symbols["Ed"]] = {
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // T
     follow[symbols["T"]] = {
         symbols["+"],
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // T'
     follow[symbols["Td"]] = {
         symbols["+"],
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
     // F
     follow[symbols["F"]] = {
         symbols["*"],
         symbols["+"],
         symbols[")"],
-        symbols["$"]
+        symbols[END_OF_INPUT]
     };
 }
 
@@ -256,7 +256,7 @@ int main() {
     vector<Production*> productions = parser.getProductions();
     cout << "Done productions\n";
     unordered_map<string, Symbol*> symbols = parser.getSymbols();
-    symbols["$"] = new Symbol("$");
+    symbols[END_OF_INPUT] = new Symbol(END_OF_INPUT);
 
     parser.displayProductions();
 
@@ -276,7 +276,7 @@ int main() {
     cout << "Displaying...\n";
     tableGenerator.displayTable();
 
-    // Symbol *program_end = new Symbol("$$");
+    // Symbol *program_end = new Symbol(END_OF_INPUT);
     // program_end->setIsTerminal(true);
     // stack<Symbol *> st;
     // st.push(program_end);

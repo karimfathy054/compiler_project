@@ -42,12 +42,12 @@
 //     table[S]["s"] = TableEntry(p1);
 //     table[S]["v"] = TableEntry(p1);
 //     table[S]["t"] = TableEntry(p1);
-//     table[S]["$$"] = TableEntry(p1);
+//     table[S][END_OF_INPUT] = TableEntry(p1);
 //     table[R]["s"] = TableEntry(p2);
 //     table[R]["v"] = TableEntry(p3);
 //     table[R]["t"] = TableEntry(p3);
 //     table[R]["b"] = TableEntry(p3);
-//     table[R]["$$"] = TableEntry(p3);
+//     table[R][END_OF_INPUT] = TableEntry(p3);
 //     table[U]["u"] = TableEntry(p4);
 //     table[U]["s"] = TableEntry(p5);
 //     table[U]["b"] = TableEntry(p5);
@@ -55,9 +55,9 @@
 //     table[V]["t"] = TableEntry(p7);
 //     table[T]["v"] = TableEntry(p8);
 //     table[T]["t"] = TableEntry(p8);
-//     table[T]["$$"] = TableEntry(p9);
+//     table[T][END_OF_INPUT] = TableEntry(p9);
 
-//     Symbol* program_end = new Symbol("$$");
+//     Symbol* program_end = new Symbol(END_OF_INPUT);
 //     program_end->setIsTerminal(true);
 //     stack<Symbol*> st;
 //     st.push(program_end);
@@ -101,7 +101,7 @@
 //     while (true)
 //     {
 //         string token = lex.next_token();
-//         if (token == "$$")
+//         if (token == END_OF_INPUT)
 //         {
 //             break;
 //         }

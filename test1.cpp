@@ -51,28 +51,28 @@
 
 //     table[E]["id"] = TableEntry(p1);
 //     table[E]["("] = TableEntry(p1);
-//     table[E]["$$"] = new TableEntry(true);
+//     table[E][END_OF_INPUT] = new TableEntry(true);
 //     table[E][")"] = new TableEntry(true);
 //     table[X]["add"] = TableEntry(p2);
-//     table[X]["$$"] = TableEntry(p3);
+//     table[X][END_OF_INPUT] = TableEntry(p3);
 //     table[X][")"] = TableEntry(p3);
 //     table[T]["id"] = TableEntry(p4);
 //     table[T]["("] = TableEntry(p4);
-//     table[T]["$$"] = new TableEntry(true);
+//     table[T][END_OF_INPUT] = new TableEntry(true);
 //     table[T][")"] = new TableEntry(true);
 //     table[T]["add"] = new TableEntry(true);
 //     table[Y]["mul"] = TableEntry(p5);
-//     table[Y]["$$"] = TableEntry(p6);
+//     table[Y][END_OF_INPUT] = TableEntry(p6);
 //     table[Y][")"] = TableEntry(p6);
 //     table[Y]["add"] = TableEntry(p6);
 //     table[F]["id"] = TableEntry(p8);
 //     table[F]["("] = TableEntry(p7);
-//     table[F]["$$"] = new TableEntry(true);
+//     table[F][END_OF_INPUT] = new TableEntry(true);
 //     table[F][")"] = new TableEntry(true);
 //     table[F]["mul"] = new TableEntry(true);
 //     table[F]["add"] = new TableEntry(true);
 
-//     Symbol *program_end = new Symbol("$$");
+//     Symbol *program_end = new Symbol(END_OF_INPUT);
 //     program_end->setIsTerminal(true);
 //     stack<Symbol *> st;
 //     st.push(program_end);
@@ -132,7 +132,7 @@
 //     while (true)
 //     {
 //         string token = lex.next_token();
-//         if (token == "$$")
+//         if (token == END_OF_INPUT)
 //         {
 //             break;
 //         }

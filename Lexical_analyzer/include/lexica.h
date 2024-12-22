@@ -1,5 +1,8 @@
 #ifndef LEX_H
 #define LEX_H
+
+#define END_OF_INPUT "$"
+
 #include <string>
 #include <fstream>
 #include <unordered_map>

@@ -39,14 +39,14 @@ void ParsingTableGenerator::displayTable() {
 
 void ParsingTableGenerator::addEntry(Symbol* nt_symbol, Symbol* input, Production* production) {
     if(table[nt_symbol].count(input->getName())) {
-        throw invalid_argument("Ambigous!!!" + nt_symbol->getName() + " with input " + input->getName() + "\n");
+        throw invalid_argument("Ambigous Grammar!!!" + nt_symbol->getName() + " with input " + input->getName() + "\n");
     }
     table[nt_symbol][input->getName()] = new TableEntry(production);
 }
 
 void ParsingTableGenerator::addEntrySync(Symbol* nt_symbol, Symbol* input) {
     if(table[nt_symbol].count(input->getName())) {
-        throw invalid_argument("Ambigous!!!" + nt_symbol->getName() + " with input " + input->getName() + "\n");
+        throw invalid_argument("Ambigous Grammar!!!" + nt_symbol->getName() + " with input " + input->getName() + "\n");
     }
     table[nt_symbol][input->getName()] = new TableEntry(true);
 }
