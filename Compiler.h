@@ -48,6 +48,7 @@ public:
     void remaining_input();
 
     void display_productions();
+    void display_symbols();
     void display_table();
 
 };
