@@ -8,6 +8,7 @@
 
 class ParsingTableGenerator {
 public:
+    ParsingTableGenerator(){};
     ParsingTableGenerator(
         std::vector<Production*> productions, 
         std::unordered_set<Symbol*> non_terminal_symbols,

@@ -13,17 +13,19 @@
 
 class GrammarReader {
 public:
-
+    GrammarReader(){};
     GrammarReader(std::string filepath);
     std::vector<Production*> getProductions();
     void displayProductions();
     std::unordered_map<std::string, Symbol*> getSymbols();
+    Symbol* getStartSymbol();
 private:
     int i;
     std::ifstream file;
     std::string cur_line;
     std::vector<Production*> productions;
     std::unordered_map<std::string, Symbol*> symbols;
+    Symbol* start_symbol;
 
     void readGrammer();
     bool is_special(char ch);

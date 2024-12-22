@@ -9,6 +9,7 @@ GrammarReader::GrammarReader(string filepath) {
     if (!file.is_open()) {
         throw runtime_error("Could not open file");
     }
+    start_symbol = nullptr;
     readGrammer();
 }
  vector<Production*> GrammarReader::getProductions() {
@@ -38,6 +39,9 @@ void GrammarReader::readGrammer() {
     while((token = next_token()) != "") {
         Symbol* lhs = getSymbol(token);
         lhs->setIsTerminal(false);
+        if(start_symbol == nullptr) {
+            start_symbol = lhs;
+        }
         production = new Production(lhs, {});
         
 
@@ -126,14 +130,6 @@ std::unordered_map<std::string, Symbol*> GrammarReader::getSymbols() {
     return symbols;
 }
 
-// int main() {
-//     try {
-//         std::string filePath = "../../ll_grammar.txt"; // Replace with the path to your grammar file
-//         GrammarReader parser(filePath);
-//         parser.displayProductions();
-//     } catch (const std::exception& e) {
-//         std::cerr << "Error: " << e.what() << std::endl;
-//     }
-
-//     return 0;
-// }
+Symbol* GrammarReader::getStartSymbol() {
+    return start_symbol;
+}

@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
+
 project(compiler_project VERSION 0.1.0 LANGUAGES C CXX)
 
-
+# Add subdirectories
 add_subdirectory(Lexical_analyzer)
-add_subdirectory(Predictive_Parser)
+add_subdirectory(Predictive_parser)
 
-# add_executable(compiler main.cpp)
-add_executable(compiler main.cpp input_parser.cpp)
+# Add the main executable
+add_executable(main main.cpp Compiler.cpp)
 
-target_link_libraries(compiler PUBLIC Predictive_Parser Lexical_analyzer)
-target_include_directories(compiler PRIVATE Lexical_analyzer Predictive_Parser)
-
-# target_include_directories(perdictive_parser PRIVATE Predictive_Parser)
+# Link the libraries
+target_link_libraries(main Lexical_analyzer Predictive_parser)

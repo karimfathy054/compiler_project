@@ -1,9 +1,8 @@
-#include "lexica.h"
-#include "RulesReader.cpp"
-#include "NFAGenerator.cpp"
-#include "DFAMinimizerPartitioning.cpp"
+#include "include/lexica.h"
 
-void lexical_analyzer::prepare_dfa(std::string &rules_file_path)
+using namespace std;
+
+void Lexical_analyzer::prepare_dfa(std::string &rules_file_path)
 {
     RulesReader r(rules_file_path);
     vector<pair<string, string>> rules = r.get_all_rules();
@@ -16,15 +15,15 @@ void lexical_analyzer::prepare_dfa(std::string &rules_file_path)
     gen_dfa_state->check_all_is_dead();
     this->dfa_start_state = gen_dfa_state;
 }
-lexical_analyzer::lexical_analyzer(string rules_file_path, string input_file_path, unordered_map<string, string> *symbol_table)
+Lexical_analyzer::Lexical_analyzer(string rules_file_path, string input_file_path)
 {
     this->rules_file_path = rules_file_path;
     this->input_file_path = input_file_path;
-    this->symbol_table = symbol_table;
     this->input_file.open(input_file_path);
+    this->symbol_table = new unordered_map<string, string>();
     prepare_dfa(rules_file_path);
 }
-string lexical_analyzer::next_token()
+string Lexical_analyzer::next_token()
 {
     string lexeme = "";
     string last_accepeted_token = "";
@@ -69,7 +68,7 @@ string lexical_analyzer::next_token()
         {
             if (symbol_table->find(last_accepeted_token) == symbol_table->end())
             {
-                (*symbol_table)[lexeme] = last_accepeted_token;
+                symbol_table->insert({lexeme, last_accepeted_token});
             }
         }
         return last_accepeted_token;
@@ -86,24 +85,7 @@ string lexical_analyzer::next_token()
     return "";
 }
 
-// int main()
-// {
-//     string input_file_path = "input.txt";
-//     string rules_file_path = "lexical rules.txt";
-//     unordered_map<string, string> symbol_table;
-//     lexical_analyzer lex(rules_file_path, input_file_path, &symbol_table);
-//     while (true)
-//     {
-//         string token = lex.next_token();
-//         if (token == "%%")
-//         {
-//             break;
-//         }
-//         if (token == "whitespace")
-//         {
-//             continue;
-//         }
-//         cout << token << endl;
-//     }
-//     return 0;
-// }
+unordered_map<string, string> Lexical_analyzer::get_symbol_table()
+{
+    return *symbol_table;
+}
