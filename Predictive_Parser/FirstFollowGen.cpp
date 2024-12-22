@@ -78,7 +78,7 @@ void FirstFollowGen::displayFirst() {
 
 int main() {
     try {
-        std::string filePath = "../../ll_grammar.txt"; // Replace with the path to your grammar file
+        std::string filePath = "..//../ll_grammar.txt"; // Replace with the path to your grammar file
         GrammarReader parser(filePath);
         parser.displayProductions();
         vector<Production*> productions = parser.getProductions();
