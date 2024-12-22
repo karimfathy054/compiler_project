@@ -55,6 +55,10 @@ void ParsingTableGenerator::generateTable() {
 
     table.clear();
 
+    if(first.size() != productions.size()) {
+        throw invalid_argument("First set size not equal to productions size\n");
+    }
+
     // symbols with epsilon in their first set
     unordered_set<Symbol*> symbols_to_sync(non_terminal_symbols);
 

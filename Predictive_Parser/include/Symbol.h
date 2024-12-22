@@ -16,9 +16,10 @@ private:
 
 public:
     Symbol(std::string name);
-    std::string getName();
     void setIsTerminal(bool isTerminal);
     bool getIsTerminal();
+    void setName(std::string name);
+    std::string getName();
     bool isEpsilon();
 };
 

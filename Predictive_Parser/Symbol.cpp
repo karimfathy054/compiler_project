@@ -15,6 +15,10 @@ bool Symbol::getIsTerminal(){
     return this->isTerminal;
 }
 
+void Symbol::setName(string name){
+    this->name = name;
+}
+
 string Symbol::getName(){
     return this->name;
 }

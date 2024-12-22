@@ -11,6 +11,8 @@
 #define LETF_TERM '\''
 #define RIGHT_TERM '\''
 
+#define EQUALS "::="
+
 class GrammarReader {
 public:
     GrammarReader(){};
@@ -28,11 +30,12 @@ private:
     Symbol* start_symbol;
 
     void readGrammer();
-    bool is_special(char ch);
+    int is_special(char ch);
     std::string next_token();
     void remove_spaces();
     std::string get_word();
     Symbol* getSymbol(std::string name);
+    void cleanSymbols();
 };
 
 #endif // GRAMMERREADER_H

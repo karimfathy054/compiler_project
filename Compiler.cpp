@@ -195,6 +195,12 @@ void Compiler::display_productions() {
     grammar_reader.displayProductions();
 }
 
+void Compiler::display_symbols() {
+    for(auto &[name, symbol]: symbols) {
+        cout << symbol->getName() << (symbol->getIsTerminal()? "(T)": "(NT)") << endl;
+    }
+}
+
 void Compiler::display_table() {
     table_generator.displayTable();
 }
