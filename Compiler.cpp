@@ -22,29 +22,16 @@ void Compiler::read_grammar() {
     grammar_reader = GrammarReader(grammar_file_path);
     productions = grammar_reader.getProductions();
 
-    LL_Grammar(productions);
+    LL_Grammar ll_grammar(productions);
 
+    ll_grammar.convert_to_LL_grammmar();
 
-    // symbols = grammar_reader.getSymbols();
-    for(auto &p : productions){
+    productions = ll_grammar.getProductions();
 
-        Symbol* lhs = p->getLhs();
-        if(symbols.find(lhs->getName()) == symbols.end()){
-            symbols[lhs->getName()] = lhs;
-        }
-        for(auto &s : p->getRhs()){
-            if(symbols.find(s->getName()) == symbols.end()){
-                symbols[s->getName()] = s;
-            }
-        }
-    }
-    symbols[END_OF_INPUT] = new Symbol(END_OF_INPUT);
-
+    symbols = ll_grammar.getSymbols();
     starting_symbol = grammar_reader.getStartSymbol();
     
-    for(auto &[_, symbol]: symbols) {
-        if(not symbol->getIsTerminal()) non_terminal_symbols.insert(symbol);
-    }
+    non_terminal_symbols = ll_grammar.getNonTerminalSymbols();
 
 }
 

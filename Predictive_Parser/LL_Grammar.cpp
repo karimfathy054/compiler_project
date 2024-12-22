@@ -17,8 +17,13 @@ void Prod::setProd_out(vector<Symbol *> rhs)
     this->prod_out = rhs;
 }
 
-void insert_replacement(Symbol *x, vector<Symbol *> &rhs, vector<Symbol *> &replace_x)
+
+LL_Grammar::LL_Grammar(vector<Production *> productions)
 {
+    this->productions = productions;
+}
+
+void LL_Grammar::insert_replacement(Symbol *x, vector<Symbol *> &rhs, vector<Symbol *> &replace_x) {
     for (int i = 0; i < rhs.size(); i++)
     {
         if (rhs[i] == x)
@@ -32,8 +37,7 @@ void insert_replacement(Symbol *x, vector<Symbol *> &rhs, vector<Symbol *> &repl
     }
 }
 
-void replace_Symbol(Symbol *x, vector<Prod *> &productions_with_x, vector<Prod *> &productions_of_x)
-{
+void LL_Grammar::replace_Symbol(Symbol *x, vector<Prod *> &productions_with_x, vector<Prod *> &productions_of_x) {
     for (Prod *p : productions_with_x)
     {
         vector<Symbol *> prod_with_x = p->getProd_out();
@@ -48,8 +52,7 @@ void replace_Symbol(Symbol *x, vector<Prod *> &productions_with_x, vector<Prod *
     }
 }
 
-pair<Symbol*,vector<Prod*>> eliminate_left_recursion(Symbol *lhs, vector<Prod *> &prods)
-{
+pair<Symbol*,vector<Prod*>> LL_Grammar::eliminate_left_recursion(Symbol *lhs, vector<Prod *> &prods) {
     vector<Prod *> prods_alpha;
     vector<Prod *> prods_beta;
     for (Prod *p : prods)
@@ -92,8 +95,7 @@ pair<Symbol*,vector<Prod*>> eliminate_left_recursion(Symbol *lhs, vector<Prod *>
     return make_pair(new_symbol,prods_alpha);
 }
 
-void LL_Grammar(vector<Production*> &productions)
-{
+void LL_Grammar::convert_to_LL_grammmar() {
     unordered_map<Symbol *, vector<Prod *>> production_map;
     vector<Symbol*> nonTerminals;
     unordered_set<Symbol *> nonTerminals_Set;
@@ -150,19 +152,24 @@ void LL_Grammar(vector<Production*> &productions)
         }
     } 
     productions = new_productions;
-    // for(auto &rule : production_map)
-    // {
-    //     cout << rule.first->getName() << " -> ";
-    //     for(Prod *p : rule.second)
-    //     {
-    //         vector<Symbol *> prod = p->getProd_out();
-    //         for(Symbol *s : prod)
-    //         {
-    //             cout << s->getName() << " ";
-    //         }
-    //         cout << "| ";
-    //     }
-    //     cout << endl;
-    // }
 
+    
+    symbols = unordered_map<string, Symbol*>();
+    non_terminal_symbols = unordered_set<Symbol*>();
+
+    for(auto &p : productions){
+
+        Symbol* lhs = p->getLhs();
+        symbols.try_emplace(lhs->getName(), lhs);
+        for(auto &s : p->getRhs()){
+            symbols.try_emplace(s->getName(), s);
+        }
+    }
+    symbols[END_OF_INPUT] = new Symbol(END_OF_INPUT);
+    
+    for(auto &[_, symbol]: symbols) {
+        if(not symbol->getIsTerminal()) non_terminal_symbols.insert(symbol);
+    }
+
+    
 }
