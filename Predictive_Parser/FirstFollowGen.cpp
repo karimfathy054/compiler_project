@@ -64,15 +64,22 @@ void FirstFollowGen::displayFirst() {
     cout << "============================================\n";
     cout << "First Set:" << endl;
     for(auto it = first.begin(); it != first.end(); it++) {
-        cout << "First(" << it->first->getName() << ") = ";
+        cout << "First(" << it->first->getName() << ") = {";
+        bool isFirst = true;
         for(Symbol* symbol: it->second) {
+            if(isFirst) {
+                isFirst = false;
+            }
+            else{
+                cout << ",";
+            }
             if(symbol->isEpsilon()) {
-                cout << "epsilon ";
+                cout << " 'epsilon'";
                 continue;
             }
-            cout << symbol->getName() << " ";
+            cout << " '" << symbol->getName() << "'";
         }
-        cout << endl;
+        cout << " }" <<endl;
     }
 }
 
