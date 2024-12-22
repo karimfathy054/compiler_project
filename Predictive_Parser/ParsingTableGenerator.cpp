@@ -231,32 +231,32 @@ void test2(
     };
 }
 
-int main() {
-    GrammarReader parser("/home/karim/compiler_project/ll_grammar.txt");
-    vector<Production*> productions = parser.getProductions();
-    cout << "Done productions\n";
-    unordered_map<string, Symbol*> symbols = parser.getSymbols();
-    symbols["$"] = new Symbol("$");
+// int main() {
+//     GrammarReader parser("/home/karim/compiler_project/ll_grammar.txt");
+//     vector<Production*> productions = parser.getProductions();
+//     cout << "Done productions\n";
+//     unordered_map<string, Symbol*> symbols = parser.getSymbols();
+//     symbols["$"] = new Symbol("$");
 
-    parser.displayProductions();
+//     parser.displayProductions();
 
-    vector<unordered_set<Symbol*>> first;
-    unordered_map<Symbol*, unordered_set<Symbol*>> follow;
+//     vector<unordered_set<Symbol*>> first;
+//     unordered_map<Symbol*, unordered_set<Symbol*>> follow;
 
-    test2(symbols, first, follow);
+//     test2(symbols, first, follow);
     
-    cout << "Tabling...\n";
-    unordered_set<Symbol*> non_terminal_symbols;
-    for(auto &[_, symbol]: symbols) {
-        if(not symbol->getIsTerminal()) non_terminal_symbols.insert(symbol);
-    }
+//     cout << "Tabling...\n";
+//     unordered_set<Symbol*> non_terminal_symbols;
+//     for(auto &[_, symbol]: symbols) {
+//         if(not symbol->getIsTerminal()) non_terminal_symbols.insert(symbol);
+//     }
 
-    ParsingTableGenerator tableGenerator(productions, non_terminal_symbols, first, follow);
+//     ParsingTableGenerator tableGenerator(productions, non_terminal_symbols, first, follow);
 
-    cout << "Displaying...\n";
-    tableGenerator.displayTable();
+//     cout << "Displaying...\n";
+//     tableGenerator.displayTable();
 
-    cout << "Done\n";
+//     cout << "Done\n";
 
-    return 0;
-}
+//     return 0;
+// }

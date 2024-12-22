@@ -139,3 +139,15 @@ unordered_map<string, Symbol*> GrammarReader::getSymbols(){
     return this->symbols;
 }
 
+// int main() {
+//     try {
+//         std::string filePath = "../../ll_grammar.txt"; // Replace with the path to your grammar file
+//         GrammarReader parser(filePath);
+//         parser.displayProductions();
+//     } catch (const std::exception& e) {
+//         std::cerr << "Error: " << e.what() << std::endl;
+//     }
+
+//     return 0;
+// }
+

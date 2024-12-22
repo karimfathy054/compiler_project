@@ -7,7 +7,7 @@
 
 class Production {
 public:
-    Production(Symbol* rhs, std::vector<Symbol*> lhs);
+    Production(Symbol* lhs, std::vector<Symbol*> rhs);
     Symbol* getLhs();
     std::vector<Symbol*> getRhs();
     void setLhs(Symbol* lhs);
