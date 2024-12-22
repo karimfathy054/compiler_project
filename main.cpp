@@ -3,9 +3,9 @@
 #include <vector>
 using namespace std;
 int main() {
-    string rules_file_path = "../../../bonus_test_input/lex_rules.txt";
-    string grammar_file_path = "../../../bonus_test_input/Grammar.txt";
-    string input_file_path = "../../../bonus_test_input/input.txt";
+    string rules_file_path = "../bonus_test_input/lex_rules.txt";
+    string grammar_file_path = "../bonus_test_input/Grammar.txt";
+    string input_file_path = "../bonus_test_input/input.txt";
     Compiler compiler(rules_file_path, grammar_file_path, input_file_path);
     cout << "Productions...\n";
     compiler.display_productions();
