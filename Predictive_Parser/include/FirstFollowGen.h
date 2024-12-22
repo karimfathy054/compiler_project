@@ -10,20 +10,20 @@
 #include "Symbol.h"
 #include "Production.h"
 
-// using namespace std;
-
 class FirstFollowGen {
     public:
         FirstFollowGen(std::vector<Production*> productions);
-        void getFirst();
-        void getFollow();
+        void getFirstSet();
+        void getFollowSet();
         void displayFirst();
         void displayFollow();
     private:
-        std::unordered_map<Symbol*, std::unordered_set<Symbol*>> first;
+        std::vector<std::unordered_set<Symbol*>> first;
+        std::unordered_map<Symbol*, std::unordered_set<Symbol*>> follow;
         std::vector<Production*> productions;
-        void computeFirst();
-        std::unordered_set<Symbol*> computeFirstOfRhs(std::vector<Symbol*> rhs);
+        std::unordered_set<Symbol*> computeFirstOfRhs(std::vector<Symbol*> rhs, int productionIndex);
+        void computeFirstSet();
+        void computeFollowSet();
 };
 
 #endif
