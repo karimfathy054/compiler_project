@@ -5,6 +5,7 @@
 #include "include/ParsingTableGenerator.h"
 #include "include/TableEntry.h"
 #include "include/lexica.h"
+#include "include/LL_Grammar.h"
 #include <vector>
 #include <unordered_map>
 #include <string>

@@ -22,16 +22,16 @@ vector<Symbol *> symbols_from_string(string s, unordered_map<string, Symbol *> &
                 Symbol *sym = new Symbol(temp);
                 sym->setIsTerminal(true);
                 sym_map[temp] = sym;
-                if(sym->isEpsilon()){
-                    continue;
-                }
+                // if(sym->isEpsilon()){
+                //     continue;
+                // }
                 symbols.push_back(sym);
             }
             else
             {
-                if(sym_map[temp]->isEpsilon()){
-                    continue;
-                }
+                // if(sym_map[temp]->isEpsilon()){
+                //     continue;
+                // }
                 symbols.push_back(sym_map[temp]);
             }
         }

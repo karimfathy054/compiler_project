@@ -81,7 +81,7 @@ pair<Symbol*,vector<Prod*>> eliminate_left_recursion(Symbol *lhs, vector<Prod *>
         prod.push_back(new_symbol);
         p->setProd_out(prod);
     }
-    prods_alpha.push_back(new Prod({}));
+    prods_alpha.push_back(new Prod({new Symbol("\\L")}));
     for(Prod *p : prods_beta)
     {
         vector<Symbol *> prod_beta = p->getProd_out();
