@@ -171,17 +171,25 @@ void FirstFollowGen::displayFollow() {
     }
 }
 
-int main() {
-    try {
-        std::string filePath = "..//../ll_grammar.txt"; // Replace with the path to your grammar file
-        GrammarReader parser(filePath);
-        parser.displayProductions();
-        vector<Production*> productions = parser.getProductions();
-        FirstFollowGen firstFollowGen(productions, parser.getStartSymbol());
-        firstFollowGen.displayFirst();
-        firstFollowGen.displayFollow();
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
-    return 0;
+vector<std::unordered_set<Symbol*>> FirstFollowGen::getFirst() {
+    return first;
 }
+
+unordered_map<Symbol*, std::unordered_set<Symbol*>> FirstFollowGen::getFollow() {
+    return follow;
+}
+
+// int main() {
+//     try {
+//         std::string filePath = "..//../ll_grammar.txt"; // Replace with the path to your grammar file
+//         GrammarReader parser(filePath);
+//         parser.displayProductions();
+//         vector<Production*> productions = parser.getProductions();
+//         FirstFollowGen firstFollowGen(productions, parser.getStartSymbol());
+//         firstFollowGen.displayFirst();
+//         firstFollowGen.displayFollow();
+//     } catch (const std::exception& e) {
+//         std::cerr << "Error: " << e.what() << std::endl;
+//     }
+//     return 0;
+// }
