@@ -12,18 +12,19 @@
 
 class FirstFollowGen {
     public:
-        FirstFollowGen(std::vector<Production*> productions);
-        void getFirstSet();
-        void getFollowSet();
+        FirstFollowGen(std::vector<Production*> productions, Symbol* startSymbol);
+        std::vector<std::unordered_set<Symbol*>> getFirst();
+        std::unordered_map<Symbol*, std::unordered_set<Symbol*>> getFollow();
         void displayFirst();
         void displayFollow();
     private:
         std::vector<std::unordered_set<Symbol*>> first;
         std::unordered_map<Symbol*, std::unordered_set<Symbol*>> follow;
         std::vector<Production*> productions;
-        std::unordered_set<Symbol*> computeFirstOfRhs(std::vector<Symbol*> rhs, int productionIndex);
+        Symbol* startSymbol;
+        std::unordered_set<Symbol*> computeFirstOfRhs(std::vector<Symbol*> rhs);
+        std::unordered_set<Symbol*> getFirstSetForSymbol(Symbol* symbol);
         void computeFirstSet();
         void computeFollowSet();
 };
-
 #endif

@@ -3,14 +3,15 @@
 
 using namespace std;
 
-FirstFollowGen::FirstFollowGen(vector<Production*> productions) {
+FirstFollowGen::FirstFollowGen(vector<Production*> productions, Symbol* startSymbol) {
     FirstFollowGen::productions = productions;
+    FirstFollowGen::startSymbol = startSymbol;
     FirstFollowGen::first = vector<unordered_set<Symbol*>>(productions.size());
     FirstFollowGen::computeFirstSet();
     FirstFollowGen::computeFollowSet();
 }
 
-unordered_set<Symbol*> FirstFollowGen::computeFirstOfRhs(vector<Symbol*> rhs, int productionIndex) {
+unordered_set<Symbol*> FirstFollowGen::computeFirstOfRhs(vector<Symbol*> rhs) {
     unordered_set<Symbol*> firstOfRhs;
     bool allHaveEpsilon = true;
     Symbol* epsilon;
@@ -47,15 +48,13 @@ unordered_set<Symbol*> FirstFollowGen::computeFirstOfRhs(vector<Symbol*> rhs, in
 }
 
 void FirstFollowGen::computeFirstSet() {
-    bool isChanged = false;
-    bool isFirstTime = true;
-    while(isChanged || isFirstTime) {
+    bool isChanged = true;
+    while(isChanged) {
         isChanged = false;
-        isFirstTime = false;
         for(int i=0; i<productions.size(); i++) {
             Symbol* lhs = productions[i]->getLhs();
             vector<Symbol*> rhs = productions[i]->getRhs();
-            unordered_set<Symbol*> firstOfRhs = computeFirstOfRhs(rhs, i);
+            unordered_set<Symbol*> firstOfRhs = computeFirstOfRhs(rhs);
             for(Symbol* symbol: firstOfRhs) {
                 if(first[i].find(symbol) == first[i].end()) {
                     first[i].insert(symbol);
@@ -66,8 +65,64 @@ void FirstFollowGen::computeFirstSet() {
     }
 }
 
-void FirstFollowGen::computeFollowSet(){
+// helper function to slice a vector
+vector<Symbol*> slicing(vector<Symbol*>& arr, size_t start)
+{
+    if(start >= arr.size()) {
+        return vector<Symbol*>();
+    }
+    return vector<Symbol*>(arr.begin() + start, arr.end());
+    
+}
 
+unordered_set<Symbol*> FirstFollowGen::getFirstSetForSymbol(Symbol* symbol) {
+    unordered_set<Symbol*> firstSet;
+    for(int i=0; i<productions.size(); i++) {
+        if(productions[i]->getLhs() == symbol) {
+            for(Symbol* innerSymbol: first[i]) {
+                firstSet.insert(innerSymbol);
+            }
+        }
+    }
+    return firstSet;
+}
+
+void FirstFollowGen::computeFollowSet(){
+    follow[startSymbol].insert(new Symbol("$"));
+    bool isChanged = true;
+    while(isChanged){
+        isChanged = false;
+        for(Production* production: productions) {
+            vector<Symbol*> rhs = production->getRhs();
+            for(int i=0; i<rhs.size(); i++){
+                if(rhs[i]->getIsTerminal()){
+                    continue;
+                }
+                unordered_set<Symbol*> firstSet;
+                if(i < rhs.size()-1) {
+                    firstSet = computeFirstOfRhs(slicing(rhs, i+1));
+                }
+                bool nextHasEpsilon = false;
+                for(Symbol* symbol: firstSet){
+                    if(symbol->isEpsilon()){
+                        nextHasEpsilon = true;
+                    }
+                    else if(follow[rhs[i]].find(symbol) == follow[rhs[i]].end()){
+                        follow[rhs[i]].insert(symbol);
+                        isChanged = true;
+                    }
+                }
+                if(i == rhs.size()-1 || nextHasEpsilon){
+                    for(Symbol* symbol: follow[production->getLhs()]){
+                        if(follow[rhs[i]].find(symbol) == follow[rhs[i]].end()){
+                            follow[rhs[i]].insert(symbol);
+                            isChanged = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void FirstFollowGen::displayFirst() {
@@ -116,13 +171,21 @@ void FirstFollowGen::displayFollow() {
     }
 }
 
+vector<std::unordered_set<Symbol*>> FirstFollowGen::getFirst() {
+    return first;
+}
+
+unordered_map<Symbol*, std::unordered_set<Symbol*>> FirstFollowGen::getFollow() {
+    return follow;
+}
+
 // int main() {
 //     try {
-//         std::string filePath = "../ll_grammar.txt"; // Replace with the path to your grammar file
+//         std::string filePath = "..//../ll_grammar.txt"; // Replace with the path to your grammar file
 //         GrammarReader parser(filePath);
 //         parser.displayProductions();
 //         vector<Production*> productions = parser.getProductions();
-//         FirstFollowGen firstFollowGen(productions);
+//         FirstFollowGen firstFollowGen(productions, parser.getStartSymbol());
 //         firstFollowGen.displayFirst();
 //         firstFollowGen.displayFollow();
 //     } catch (const std::exception& e) {
