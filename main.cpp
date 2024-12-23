@@ -10,7 +10,7 @@ int main() {
         GrammarReader parser(filePath);
         parser.displayProductions();
         vector<Production*> productions = parser.getProductions();
-        FirstFollowGen firstFollowGen(productions);
+        FirstFollowGen firstFollowGen(productions, parser.getStartSymbol());
         firstFollowGen.displayFirst();
         firstFollowGen.displayFollow();
     } catch (const std::exception& e) {
