@@ -32,9 +32,4 @@ void Production::displayProduction() {
     for (int i = 0; i < rhs.size(); i++) {
         std::cout << rhs[i]->getName() << " ";
     }
-    // std::cout << lhs->getName()<<(lhs->getIsTerminal() == true? "(T)":"(NT)") << " -> ";
-    // for (int i = 0; i < rhs.size(); i++) {
-    //     std::cout << rhs[i]->getName() <<(rhs[i]->getIsTerminal() == true? "(T)":"(NT)")<< " ";
-    // }
-    std::cout << std::endl;
-}
+ }
