@@ -1,23 +1,40 @@
 #include "Compiler.h"
 #include <iostream>
 #include <vector>
+#include "Predictive_Parser/include/FirstFollowGen.h"
 using namespace std;
+
 int main() {
-    string rules_file_path = "../bonus_test_input/lex_rules.txt";
-    string grammar_file_path = "../bonus_test_input/Grammar.txt";
-    string input_file_path = "../bonus_test_input/input.txt";
-    Compiler compiler(rules_file_path, grammar_file_path, input_file_path);
-    cout << "Productions...\n";
-    compiler.display_productions();
-    cout << "Table...\n";
-    compiler.display_table();
-    cout << "Result...\n";
-    compiler.parse_input();
-    
-    compiler.remaining_input();
-    cout << "Done\n";
+    try {
+        string filePath = "../ll_grammar.txt"; // Replace with the path to your grammar file
+        GrammarReader parser(filePath);
+        parser.displayProductions();
+        vector<Production*> productions = parser.getProductions();
+        FirstFollowGen firstFollowGen(productions);
+        firstFollowGen.displayFirst();
+        firstFollowGen.displayFollow();
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
     return 0;
 }
+
+// int main() {
+//     string rules_file_path = "../bonus_test_input/lex_rules.txt";
+//     string grammar_file_path = "../bonus_test_input/Grammar.txt";
+//     string input_file_path = "../bonus_test_input/input.txt";
+//     Compiler compiler(rules_file_path, grammar_file_path, input_file_path);
+//     cout << "Productions...\n";
+//     compiler.display_productions();
+//     cout << "Table...\n";
+//     compiler.display_table();
+//     cout << "Result...\n";
+//     compiler.parse_input();
+    
+//     compiler.remaining_input();
+//     cout << "Done\n";
+//     return 0;
+// }
 
 /*
 int main()

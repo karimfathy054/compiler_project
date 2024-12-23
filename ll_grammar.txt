@@ -1,5 +1,5 @@
-# E ::= T Ed 
-# Ed ::= '+' T Ed | '\L'
-# T ::= F Td
-# Td ::= '*' F Td | '\L'
-# F ::= '(' E ')' | 'id'
+ # S ::= R T
+ # R ::= s U R b | \L
+ # U ::= u U | \L
+ # V ::= v V | \L
+ # T ::= V t T | \L

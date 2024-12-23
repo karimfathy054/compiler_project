@@ -216,6 +216,7 @@ void Compiler::remaining_input() {
 void Compiler::display_productions() {
     for(auto &p : productions){
         p->displayProduction();
+        cout << endl;
     }
 }
 
