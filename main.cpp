@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "Predictive_Parser/include/FirstFollowGen.h"
+#include "Predictive_Parser/include/Left_Factoring.h"
 using namespace std;
 
 int main() {

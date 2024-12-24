@@ -1,5 +1,1 @@
- # S ::= R T
- # R ::= s U R b | \L
- # U ::= u U | \L
- # V ::= v V | \L
- # T ::= V t T | \L
+#A ::= a b c| a b c d e | a b c d e f | a b c d e f g
