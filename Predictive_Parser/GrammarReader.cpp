@@ -117,6 +117,7 @@ string GrammarReader::get_word() {
 
     if(i < cur_line.size() and word[0] == '\\') {
         word += cur_line[i++];
+        remove_spaces();
         return word;
     }
 
@@ -129,6 +130,7 @@ string GrammarReader::get_word() {
             throw runtime_error("Expected " + RIGHT_TERM);
         }
         i++;
+        remove_spaces();
         return word;
     }
 
