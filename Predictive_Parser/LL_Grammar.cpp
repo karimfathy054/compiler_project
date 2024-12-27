@@ -88,6 +88,10 @@ pair<Symbol*,vector<Prod*>> LL_Grammar::eliminate_left_recursion(Symbol *lhs, ve
         p->setProd_out(prod);
     }
     prods_alpha.push_back(new Prod({new Symbol("\\L")}));
+    if(prods_beta.size() == 0)
+    {
+        prods_beta.push_back(new Prod({})); // epsilon production
+    }
     for(Prod *p : prods_beta)
     {
         vector<Symbol *> prod_beta = p->getProd_out();
@@ -125,11 +129,11 @@ void LL_Grammar::convert_to_LL_grammmar() {
             for (Symbol *prev_nT : nonTerminals)
             {
                 
-                vector<Prod *> prev_prods = production_map[prev_nT];
                 if (nT == prev_nT)
                 {
                     break;
                 }
+                vector<Prod *> prev_prods = production_map[prev_nT];
                 replace_Symbol(prev_nT, prods, prev_prods);
             }
             new_nonTerminals.push_back(nT);
