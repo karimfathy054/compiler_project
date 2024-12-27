@@ -36,9 +36,25 @@ void Compiler::read_grammar() {
     productions = grammar_reader.getProductions();
     grammar_reader.displayProductions();
 
+
+    cout << "Original\n";
+    display_productions();
+
     LL_Grammar ll_grammar(productions);
+
     productions = ll_grammar.getProductions();
-    ll_grammar.displayProductions();
+
+    cout << "After recursion and sub\n";
+    display_productions();
+
+    Left_Factoring left_factoring(productions);
+
+    left_factoring.leftFactor();
+
+    productions = left_factoring.getNewProductions();
+
+    cout << "After left factoring\n";
+    display_productions();
 
     symbols = ll_grammar.getSymbols();
     starting_symbol = grammar_reader.getStartSymbol();

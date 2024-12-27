@@ -60,8 +60,8 @@ void Left_Factoring::leftFactor() {
         PrefixTree *tree = new PrefixTree(NULL, vector<Symbol*>());
         tree->populate(nt_productions);
 
-        cout << "NT: " << symbol->getName() << endl;
-        tree->displayTree(0);
+        // cout << "NT: " << symbol->getName() << endl;
+        // tree->displayTree(0);
         
         factorTree(tree);
         // new_productions.push_back(root_production);

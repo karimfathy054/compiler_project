@@ -24,46 +24,35 @@ LL_Grammar::LL_Grammar(vector<Production *> productions)
     this->convert_to_LL_grammmar();
 }
 
-void LL_Grammar::displayProductions() {
-    cout << "=============================================================\n";
-    cout << "Productions converted to LL(1)\n";
-    for(Production* production : productions) {
-        cout << production->getLhs()->getName() 
-        << (production->getLhs()->getIsTerminal()? "(T)": "(NT)")
-        << " -> ";
-        for(Symbol* rhs : production->getRhs()) {
-            cout << rhs->getName() << (rhs->getIsTerminal()? "(T)": "(NT)") << " ";
-        }
-        cout << endl;
-    }
-}
-void LL_Grammar::insert_replacement(Symbol *x, vector<Symbol *> &rhs, vector<Symbol *> &replace_x) {
-    for (int i = 0; i < rhs.size(); i++)
-    {
-        if (rhs[i] == x)
-        {
-            rhs.erase(rhs.begin() + i);
-            for (int j = 0; j < replace_x.size(); j++)
-            {
-                rhs.insert(rhs.begin() + i + j, replace_x[j]);
-            }
-        }
-    }
-}
-
 void LL_Grammar::replace_Symbol(Symbol *x, vector<Prod *> &productions_with_x, vector<Prod *> &productions_of_x) {
-    for (Prod *p : productions_with_x)
-    {
-        vector<Symbol *> prod_with_x = p->getProd_out();
-        if (prod_with_x.size()>0 && prod_with_x[0] == x)
-        {
+    vector<Prod *> new_productions_with_x;
+
+    for(int i = 0; i < productions_with_x.size(); i++) {
+        Prod *production_with_x = productions_with_x[i];
+        vector<Symbol*> prod_out = production_with_x->getProd_out();
+        if(prod_out[0] == x) {
+            // B x y -> x y
+            prod_out.erase(prod_out.begin());
+
             for (Prod *p2 : productions_of_x)
             {
-                vector<Symbol *> prod_of_x = p2->getProd_out();
-                insert_replacement(x, prod_with_x, prod_of_x);
+                if(p2->getProd_out()[0]->getName() == EPSILON) {
+                    new_productions_with_x.push_back(new Prod(prod_out));
+                    continue;
+                }
+                // B = l l -> A = l l x y
+                vector<Symbol*> temp(p2->getProd_out());
+                temp.insert(temp.end(), prod_out.begin(), prod_out.end());
+
+                new_productions_with_x.push_back(new Prod(temp));
             }
+        } else {
+            // no subs
+            new_productions_with_x.push_back(production_with_x);
         }
     }
+    productions_with_x = new_productions_with_x;
+
 }
 
 pair<Symbol*,vector<Prod*>> LL_Grammar::eliminate_left_recursion(Symbol *lhs, vector<Prod *> &prods) {
@@ -146,9 +135,9 @@ void LL_Grammar::convert_to_LL_grammmar() {
             new_nonTerminals.push_back(nT);
             pair<Symbol *, vector<Prod *>> new_rule = eliminate_left_recursion(nT, prods);
 
+            production_map[nT] = prods;
             if(new_rule.first != nullptr)
             {
-                production_map[nT] = prods;
                 production_map[new_rule.first] = new_rule.second;
                 new_nonTerminals.push_back(new_rule.first);
                 is_LL = false;
