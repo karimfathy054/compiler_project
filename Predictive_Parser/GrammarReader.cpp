@@ -16,6 +16,8 @@ GrammarReader::GrammarReader(string filepath) {
     return productions;
 }
 void GrammarReader::displayProductions() {
+    cout << "=============================================================\n";
+    cout << "Productions read from the file\n";
     for(Production* production : productions) {
         cout << production->getLhs()->getName() 
         << (production->getLhs()->getIsTerminal()? "(T)": "(NT)")
