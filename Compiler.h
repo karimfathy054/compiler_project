@@ -14,7 +14,7 @@
 class Compiler {
 private:
     string outputFileName;
-    MarkdownTable tableOutput = MarkdownTable({"Symbol", "Curr Input Token", "Action"});
+    MarkdownTable tableOutput = MarkdownTable({"Stack", "Curr Input Token", "Action"});
 
     std::string rules_file_path;
     std::string grammar_file_path;

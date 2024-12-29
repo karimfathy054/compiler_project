@@ -1,4 +1,4 @@
-|                            Symbol | Curr Input Token |                     Action |
+|                             Stack | Curr Input Token |                     Action |
 |-----------------------------------|------------------|----------------------------|
 |                            $bexpr |                ( |       bexpr -> btermbexpr' |
 |                      $bexpr'bterm |                ( |     bterm -> bfactorbterm' |
