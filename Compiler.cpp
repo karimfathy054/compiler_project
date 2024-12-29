@@ -4,11 +4,35 @@
 
 using namespace std;
 
+// some helper functions
+string get_string_from_stack(stack<Symbol *> st)
+{
+    string str = "";
+    while (!st.empty())
+    {
+        str = st.top()->getName() + str;
+        st.pop();
+    }
+    return str;
+}
+
+string get_string_from_vector(vector<Symbol *> vec)
+{
+    string str = "";
+    for (auto &s : vec)
+    {
+        str += s->getName();
+    }
+    return str;
+}
+
 Compiler::Compiler(
     std::string rules_file_path,
     std::string grammar_file_path,
-    std::string input_file_path
+    std::string input_file_path,
+    std::string output_file_name
 ) {
+    this->outputFileName = output_file_name;
     this->rules_file_path = rules_file_path;
     this->grammar_file_path = grammar_file_path;
     this->input_file_path = input_file_path;
@@ -22,18 +46,16 @@ Compiler::Compiler(
 void Compiler::read_grammar() {
     grammar_reader = GrammarReader(grammar_file_path);
     productions = grammar_reader.getProductions();
+    grammar_reader.displayProductions();
 
     LL_Grammar ll_grammar(productions);
-
-    ll_grammar.convert_to_LL_grammmar();
-
     productions = ll_grammar.getProductions();
+    ll_grammar.displayProductions();
 
     symbols = ll_grammar.getSymbols();
     starting_symbol = grammar_reader.getStartSymbol();
     
     non_terminal_symbols = ll_grammar.getNonTerminalSymbols();
-
 }
 
 
@@ -41,6 +63,8 @@ void Compiler::compute_first_follow_sets() {
     FirstFollowGen firstFollowGen(productions, starting_symbol);
     first = firstFollowGen.getFirst();
     follow = firstFollowGen.getFollow();
+    firstFollowGen.displayFirst();
+    firstFollowGen.displayFollow();
 }
 
 void Compiler::compute_parsing_table() {
@@ -65,27 +89,28 @@ string Compiler::next_token_wrapper()
 void Compiler::parse_input() {
     Symbol *program_end = new Symbol(END_OF_INPUT);
     program_end->setIsTerminal(true);
-
+    vector<string> table_row(3);
     stack<Symbol *> st;
     st.push(program_end);
     st.push(starting_symbol);
     
     string token = next_token_wrapper();
+
     while (!st.empty())
-    {
+    {   table_row[0] = get_string_from_stack(st);
+        table_row[1] = token;
         Symbol *top = st.top();
         if (top->getIsTerminal())
         {
             if (top->getName() == token)
             {
-                cout << "Matched: " << top->getName() << endl;
+                table_row[2] = "Matched: "+top->getName();
                 st.pop();
                 token = next_token_wrapper();
             }
             else
             {
-                cout << "Error: token " << top->getName() << " is added to input" << endl;
-                break;
+                table_row[2] = "Error: token " + top->getName() + " is added to input";
             }
         }
         else
@@ -94,20 +119,19 @@ void Compiler::parse_input() {
             // check if entry is null or not
             if (entry->getProduction() == nullptr && !entry->getIsSync())
             {
-                cerr << "Error: token mismatch ( skipping token " << token << " )" << endl;
+                table_row[2] =  "Error: token mismatch ( skipping token " + token + " )";
                 token = next_token_wrapper();
             }
             else if (entry->getIsSync())
             {
-                cout << "Error: awaiting follow" << endl;
+                table_row[2] = "Error: awaiting follow";
                 st.pop();
             }
             else
             {
                 st.pop();
                 vector<Symbol *> rhs = entry->getProduction()->getRhs();
-                entry->getProduction()->displayProduction();
-                cout << endl;
+                table_row[2] = entry->getProduction()->getLhs()->getName() + " -> " + get_string_from_vector(rhs);
 
                 if(rhs[0]->getName() == "\\L") continue;
 
@@ -117,7 +141,10 @@ void Compiler::parse_input() {
                 }
             }
         }
+        tableOutput.addRow(table_row);
+        // cout << table_row[0] << " " << table_row[1] << " " << table_row[2] << endl;
     }
+    tableOutput.saveToMarkdown(outputFileName);
 }
 
 void Compiler::remaining_input() {

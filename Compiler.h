@@ -9,9 +9,13 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include "MarkdownTable.h"
 
 class Compiler {
 private:
+    string outputFileName;
+    MarkdownTable tableOutput = MarkdownTable({"Symbol", "Curr Input Token", "Action"});
+
     std::string rules_file_path;
     std::string grammar_file_path;
     std::string input_file_path;
@@ -23,8 +27,6 @@ private:
     Symbol* starting_symbol;
     void read_grammar();
 
-    // todo
-    // First Follow Object
     std::vector<std::unordered_set<Symbol*>> first;
     std::unordered_map<Symbol*, std::unordered_set<Symbol*>> follow;
     void compute_first_follow_sets();
@@ -41,7 +43,8 @@ public:
     Compiler(
         std::string rules_file_path,
         std::string grammar_file_path,
-        std::string input_file_path
+        std::string input_file_path,
+        std::string output_file_name
     );
     void parse_input();
 
