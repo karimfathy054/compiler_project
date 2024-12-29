@@ -1,27 +1,17 @@
 #include "Compiler.h"
 #include <iostream>
 #include "include/FirstFollowGen.h"
+#include "OutputHandler.h"
 
 using namespace std;
 
-// some helper functions
-string get_string_from_stack(stack<Symbol *> st)
+// helper function
+std::string get_string_from_vector(std::vector<Symbol *> vec)
 {
-    string str = "";
-    while (!st.empty())
-    {
-        str = st.top()->getName() + str;
-        st.pop();
-    }
-    return str;
-}
-
-string get_string_from_vector(vector<Symbol *> vec)
-{
-    string str = "";
+    std::string str = "";
     for (auto &s : vec)
     {
-        str += s->getName();
+        str += s->getName() + " ";
     }
     return str;
 }
@@ -29,10 +19,8 @@ string get_string_from_vector(vector<Symbol *> vec)
 Compiler::Compiler(
     std::string rules_file_path,
     std::string grammar_file_path,
-    std::string input_file_path,
-    std::string output_file_name
+    std::string input_file_path
 ) {
-    this->outputFileName = output_file_name;
     this->rules_file_path = rules_file_path;
     this->grammar_file_path = grammar_file_path;
     this->input_file_path = input_file_path;
@@ -63,8 +51,18 @@ void Compiler::compute_first_follow_sets() {
     FirstFollowGen firstFollowGen(productions, starting_symbol);
     first = firstFollowGen.getFirst();
     follow = firstFollowGen.getFollow();
-    firstFollowGen.displayFirst();
-    firstFollowGen.displayFollow();
+
+    // Display first and follow sets to md file
+    unordered_set<Symbol*> visited;
+    for(Symbol* symbol: non_terminal_symbols) {
+        if(visited.find(symbol) == visited.end()) {
+            outputHandler.add_row_to_first_follow_table(symbol->getName(), 
+                firstFollowGen.getFirstSetForSymbol(symbol),
+                firstFollowGen.getFollowSetForSymbol(symbol)
+            );
+            visited.insert(symbol);
+        }
+    }
 }
 
 void Compiler::compute_parsing_table() {
@@ -89,28 +87,31 @@ string Compiler::next_token_wrapper()
 void Compiler::parse_input() {
     Symbol *program_end = new Symbol(END_OF_INPUT);
     program_end->setIsTerminal(true);
-    vector<string> table_row(3);
     stack<Symbol *> st;
     st.push(program_end);
     st.push(starting_symbol);
     
     string token = next_token_wrapper();
 
+    stack<Symbol *> row_stack;
+    string row_token;
+    string row_action;
+
     while (!st.empty())
-    {   table_row[0] = get_string_from_stack(st);
-        table_row[1] = token;
+    {   row_stack = st;
+        row_token = token;
         Symbol *top = st.top();
         if (top->getIsTerminal())
         {
             if (top->getName() == token)
             {
-                table_row[2] = "Matched: "+top->getName();
+                row_action = "Matched: "+top->getName();
                 st.pop();
                 token = next_token_wrapper();
             }
             else
             {
-                table_row[2] = "Error: token " + top->getName() + " is added to input";
+                row_action = "Error: token " + top->getName() + " is added to input";
             }
         }
         else
@@ -119,19 +120,19 @@ void Compiler::parse_input() {
             // check if entry is null or not
             if (entry->getProduction() == nullptr && !entry->getIsSync())
             {
-                table_row[2] =  "Error: token mismatch ( skipping token " + token + " )";
+                row_action =  "Error: token mismatch ( skipping token " + token + " )";
                 token = next_token_wrapper();
             }
             else if (entry->getIsSync())
             {
-                table_row[2] = "Error: awaiting follow";
+                row_action = "Error: awaiting follow";
                 st.pop();
             }
             else
             {
                 st.pop();
                 vector<Symbol *> rhs = entry->getProduction()->getRhs();
-                table_row[2] = entry->getProduction()->getLhs()->getName() + " -> " + get_string_from_vector(rhs);
+                row_action = entry->getProduction()->getLhs()->getName() + " -> " + get_string_from_vector(rhs);
 
                 if(rhs[0]->getName() == "\\L") continue;
 
@@ -141,10 +142,9 @@ void Compiler::parse_input() {
                 }
             }
         }
-        tableOutput.addRow(table_row);
-        // cout << table_row[0] << " " << table_row[1] << " " << table_row[2] << endl;
+        outputHandler.add_row_to_output_table(row_stack, row_token, row_action);
     }
-    tableOutput.saveToMarkdown(outputFileName);
+    outputHandler.save_tables();
 }
 
 void Compiler::remaining_input() {

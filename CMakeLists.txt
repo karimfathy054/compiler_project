@@ -7,7 +7,7 @@ add_subdirectory(Lexical_analyzer)
 add_subdirectory(Predictive_Parser)
 
 # Add the main executable
-add_executable(main main.cpp Compiler.cpp MarkdownTable.cpp)
+add_executable(main main.cpp Compiler.cpp MarkdownTable.cpp OutputHandler.cpp)
 
 # Link the libraries
 target_link_libraries(main Lexical_analyzer Predictive_parser)

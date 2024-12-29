@@ -10,12 +10,13 @@
 #include <unordered_map>
 #include <string>
 #include "MarkdownTable.h"
+#include "OutputHandler.h"
 
 class Compiler {
 private:
-    string outputFileName;
     MarkdownTable tableOutput = MarkdownTable({"Stack", "Curr Input Token", "Action"});
 
+    OutputHandler outputHandler;
     std::string rules_file_path;
     std::string grammar_file_path;
     std::string input_file_path;
@@ -43,8 +44,7 @@ public:
     Compiler(
         std::string rules_file_path,
         std::string grammar_file_path,
-        std::string input_file_path,
-        std::string output_file_name
+        std::string input_file_path
     );
     void parse_input();
 
