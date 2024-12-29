@@ -87,6 +87,10 @@ unordered_set<Symbol*> FirstFollowGen::getFirstSetForSymbol(Symbol* symbol) {
     return firstSet;
 }
 
+unordered_set<Symbol*> FirstFollowGen::getFollowSetForSymbol(Symbol* symbol) {
+    return follow[symbol];
+}
+
 void FirstFollowGen::computeFollowSet(){
     follow[startSymbol].insert(new Symbol("$"));
     bool isChanged = true;

@@ -1,8 +1,20 @@
 #include "Compiler.h"
 #include <iostream>
 #include "include/FirstFollowGen.h"
+#include "OutputHandler.h"
 
 using namespace std;
+
+// helper function
+std::string get_string_from_vector(std::vector<Symbol *> vec)
+{
+    std::string str = "";
+    for (auto &s : vec)
+    {
+        str += s->getName() + " ";
+    }
+    return str;
+}
 
 Compiler::Compiler(
     std::string rules_file_path,
@@ -22,18 +34,16 @@ Compiler::Compiler(
 void Compiler::read_grammar() {
     grammar_reader = GrammarReader(grammar_file_path);
     productions = grammar_reader.getProductions();
+    grammar_reader.displayProductions();
 
     LL_Grammar ll_grammar(productions);
-
-    ll_grammar.convert_to_LL_grammmar();
-
     productions = ll_grammar.getProductions();
+    ll_grammar.displayProductions();
 
     symbols = ll_grammar.getSymbols();
     starting_symbol = grammar_reader.getStartSymbol();
     
     non_terminal_symbols = ll_grammar.getNonTerminalSymbols();
-
 }
 
 
@@ -41,6 +51,18 @@ void Compiler::compute_first_follow_sets() {
     FirstFollowGen firstFollowGen(productions, starting_symbol);
     first = firstFollowGen.getFirst();
     follow = firstFollowGen.getFollow();
+
+    // Display first and follow sets to md file
+    unordered_set<Symbol*> visited;
+    for(Symbol* symbol: non_terminal_symbols) {
+        if(visited.find(symbol) == visited.end()) {
+            outputHandler.add_row_to_first_follow_table(symbol->getName(), 
+                firstFollowGen.getFirstSetForSymbol(symbol),
+                firstFollowGen.getFollowSetForSymbol(symbol)
+            );
+            visited.insert(symbol);
+        }
+    }
 }
 
 void Compiler::compute_parsing_table() {
@@ -65,27 +87,31 @@ string Compiler::next_token_wrapper()
 void Compiler::parse_input() {
     Symbol *program_end = new Symbol(END_OF_INPUT);
     program_end->setIsTerminal(true);
-
     stack<Symbol *> st;
     st.push(program_end);
     st.push(starting_symbol);
     
     string token = next_token_wrapper();
+
+    stack<Symbol *> row_stack;
+    string row_token;
+    string row_action;
+
     while (!st.empty())
-    {
+    {   row_stack = st;
+        row_token = token;
         Symbol *top = st.top();
         if (top->getIsTerminal())
         {
             if (top->getName() == token)
             {
-                cout << "Matched: " << top->getName() << endl;
+                row_action = "Matched: "+top->getName();
                 st.pop();
                 token = next_token_wrapper();
             }
             else
             {
-                cout << "Error: token " << top->getName() << " is added to input" << endl;
-                break;
+                row_action = "Error: token " + top->getName() + " is added to input";
             }
         }
         else
@@ -94,20 +120,19 @@ void Compiler::parse_input() {
             // check if entry is null or not
             if (entry->getProduction() == nullptr && !entry->getIsSync())
             {
-                cerr << "Error: token mismatch ( skipping token " << token << " )" << endl;
+                row_action =  "Error: token mismatch ( skipping token " + token + " )";
                 token = next_token_wrapper();
             }
             else if (entry->getIsSync())
             {
-                cout << "Error: awaiting follow" << endl;
+                row_action = "Error: awaiting follow";
                 st.pop();
             }
             else
             {
                 st.pop();
                 vector<Symbol *> rhs = entry->getProduction()->getRhs();
-                entry->getProduction()->displayProduction();
-                cout << endl;
+                row_action = entry->getProduction()->getLhs()->getName() + " -> " + get_string_from_vector(rhs);
 
                 if(rhs[0]->getName() == "\\L") continue;
 
@@ -117,7 +142,9 @@ void Compiler::parse_input() {
                 }
             }
         }
+        outputHandler.add_row_to_output_table(row_stack, row_token, row_action);
     }
+    outputHandler.save_tables();
 }
 
 void Compiler::remaining_input() {

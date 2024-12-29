@@ -21,8 +21,22 @@ void Prod::setProd_out(vector<Symbol *> rhs)
 LL_Grammar::LL_Grammar(vector<Production *> productions)
 {
     this->productions = productions;
+    this->convert_to_LL_grammmar();
 }
 
+void LL_Grammar::displayProductions() {
+    cout << "=============================================================\n";
+    cout << "Productions converted to LL(1)\n";
+    for(Production* production : productions) {
+        cout << production->getLhs()->getName() 
+        << (production->getLhs()->getIsTerminal()? "(T)": "(NT)")
+        << " -> ";
+        for(Symbol* rhs : production->getRhs()) {
+            cout << rhs->getName() << (rhs->getIsTerminal()? "(T)": "(NT)") << " ";
+        }
+        cout << endl;
+    }
+}
 void LL_Grammar::insert_replacement(Symbol *x, vector<Symbol *> &rhs, vector<Symbol *> &replace_x) {
     for (int i = 0; i < rhs.size(); i++)
     {
