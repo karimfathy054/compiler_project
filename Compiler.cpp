@@ -93,7 +93,7 @@ string Compiler::next_token_wrapper()
     do
     {
         token = lexical_analyzer.next_token();
-    } while (token == "whitespace");
+    } while (token == "whitespace" || token == "");
     return token;
 }
 
@@ -146,9 +146,13 @@ void Compiler::parse_input() {
             {
                 st.pop();
                 vector<Symbol *> rhs = entry->getProduction()->getRhs();
-                row_action = entry->getProduction()->getLhs()->getName() + " -> " + get_string_from_vector(rhs);
 
-                if(rhs[0]->getName() == "\\L") continue;
+                if(rhs[0]->getName() == "\\L") {
+                    row_action = entry->getProduction()->getLhs()->getName() + " -> " + "\\L";
+                    outputHandler.add_row_to_output_table(row_stack, row_token, row_action);
+                    continue;
+                }
+                row_action = entry->getProduction()->getLhs()->getName() + " -> " + get_string_from_vector(rhs);
 
                 for (int i = rhs.size() - 1; i >= 0; i--)
                 {
