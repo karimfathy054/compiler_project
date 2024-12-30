@@ -119,7 +119,7 @@ void LL_Grammar::convert_to_LL_grammmar() {
     vector<Symbol*> new_nonTerminals;
 
     bool is_LL = false;
-    while (!is_LL)
+    // while (!is_LL) one loop is enough
     {
         is_LL = true;
         for (Symbol* nT : nonTerminals)
@@ -137,9 +137,10 @@ void LL_Grammar::convert_to_LL_grammmar() {
                 replace_Symbol(prev_nT, prods, prev_prods);
             }
             new_nonTerminals.push_back(nT);
+            production_map[nT] = prods;
+            
             pair<Symbol *, vector<Prod *>> new_rule = eliminate_left_recursion(nT, prods);
 
-            production_map[nT] = prods;
             if(new_rule.first != nullptr)
             {
                 production_map[new_rule.first] = new_rule.second;

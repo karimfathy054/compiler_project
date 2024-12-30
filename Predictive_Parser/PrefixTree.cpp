@@ -64,6 +64,5 @@ void PrefixTree::displayTree(int i) {
 }
 
 
-Production* PrefixTree::leftFactor(vector<Production*> &new_productions) {
-}
+// Production* PrefixTree::leftFactor(vector<Production*> &new_productions) {}
 
