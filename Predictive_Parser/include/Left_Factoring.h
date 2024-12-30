@@ -30,6 +30,8 @@ public:
     void leftFactor();
     Production* factorTree(PrefixTree *tree);
     std::vector<Production*> getNewProductions();
+    std::unordered_map<std::string, Symbol*> getSymbols();
+    std::unordered_set<Symbol*> getNonTerminalSymbols();
     // void displayProductions();
 };
 #endif // LEFT_FACTORING_H

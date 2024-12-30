@@ -36,10 +36,6 @@ void Compiler::read_grammar() {
     productions = grammar_reader.getProductions();
     grammar_reader.displayProductions();
 
-
-    cout << "Original\n";
-    display_productions();
-
     LL_Grammar ll_grammar(productions);
 
     productions = ll_grammar.getProductions();
@@ -53,13 +49,14 @@ void Compiler::read_grammar() {
 
     productions = left_factoring.getNewProductions();
 
+    cout << "+++++++++++++++++++++++++++++++++++++++++++\n";
     cout << "After left factoring\n";
     display_productions();
 
-    symbols = ll_grammar.getSymbols();
+    symbols = left_factoring.getSymbols();
     starting_symbol = grammar_reader.getStartSymbol();
     
-    non_terminal_symbols = ll_grammar.getNonTerminalSymbols();
+    non_terminal_symbols = left_factoring.getNonTerminalSymbols();
 }
 
 
@@ -127,14 +124,15 @@ void Compiler::parse_input() {
             }
             else
             {
-                row_action = "Error: token " + top->getName() + " is added to input";
+                row_action = "Error: token \'" + top->getName() + "\' is added to input";
+                st.pop();
             }
         }
         else
         {
             TableEntry* entry = table[top][token];
             // check if entry is null or not
-            if (entry->getProduction() == nullptr && !entry->getIsSync())
+            if (entry == nullptr)
             {
                 row_action =  "Error: token mismatch ( skipping token " + token + " )";
                 token = next_token_wrapper();

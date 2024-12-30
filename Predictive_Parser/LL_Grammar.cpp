@@ -137,9 +137,9 @@ void LL_Grammar::convert_to_LL_grammmar() {
                 replace_Symbol(prev_nT, prods, prev_prods);
             }
             new_nonTerminals.push_back(nT);
-            production_map[nT] = prods;
             
             pair<Symbol *, vector<Prod *>> new_rule = eliminate_left_recursion(nT, prods);
+            production_map[nT] = prods;
 
             if(new_rule.first != nullptr)
             {

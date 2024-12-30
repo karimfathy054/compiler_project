@@ -1,6 +1,6 @@
 # add_library(Predictive_Parser GrammarReader2.cpp Production.cpp Symbol.cpp TableEntry.cpp ParsingTableGenerator.cpp FirstFollowGen.cpp)
 
-add_executable(PP GrammarReader.cpp Production.cpp Symbol.cpp TableEntry.cpp ParsingTableGenerator.cpp FirstFollowGen.cpp Left_Factoring.cpp PrefixTree.cpp)
+# add_executable(PP GrammarReader.cpp Production.cpp Symbol.cpp TableEntry.cpp ParsingTableGenerator.cpp FirstFollowGen.cpp Left_Factoring.cpp PrefixTree.cpp)
 
 cmake_minimum_required(VERSION 3.10)
 

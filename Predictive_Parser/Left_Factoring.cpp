@@ -37,11 +37,28 @@ Symbol* Left_Factoring::getSymbol(string name) {
 
 Symbol* Left_Factoring::makeNewName(Symbol* symbol) {
     nt_count[symbol]++;
-    return getSymbol(symbol->getName() + '_' + to_string(nt_count[symbol]));
+    Symbol* s = getSymbol(symbol->getName() + '_' + to_string(nt_count[symbol]));
+    s->setIsTerminal(false);
+    return s;
 }
 
 std::vector<Production*> Left_Factoring::getNewProductions() {
     return new_productions;
+}
+
+std::unordered_map<std::string, Symbol*> Left_Factoring::getSymbols() {
+    return symbols;
+}
+
+std::unordered_set<Symbol*> Left_Factoring::getNonTerminalSymbols() {
+    unordered_set<Symbol*> non_terminals;
+    for(auto &[name, sym]: symbols) {
+        if(sym->getIsTerminal()){
+            continue;
+        }
+        non_terminals.insert(sym);
+    }
+    return non_terminals;
 }
 
 // void Left_Factoring::displayProductions() {

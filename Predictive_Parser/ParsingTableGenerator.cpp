@@ -46,7 +46,8 @@ void ParsingTableGenerator::addEntry(Symbol* nt_symbol, Symbol* input, Productio
 
 void ParsingTableGenerator::addEntrySync(Symbol* nt_symbol, Symbol* input) {
     if(table[nt_symbol].count(input->getName())) {
-        throw invalid_argument("Ambigous Grammar!!!" + nt_symbol->getName() + " with input " + input->getName() + "\n");
+        // throw invalid_argument("Ambigous Grammar!!!" + nt_symbol->getName() + " with input " + input->getName() + "\n");
+        return;
     }
     table[nt_symbol][input->getName()] = new TableEntry(true);
 }
@@ -86,6 +87,7 @@ void ParsingTableGenerator::generateTable() {
 
     for(Symbol* symbol: symbols_to_sync) {
         for(Symbol* follow_symbol: follow[symbol]) {
+
             addEntrySync(symbol, follow_symbol);
         }
     }
