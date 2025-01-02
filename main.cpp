@@ -1,23 +1,17 @@
-#include "lexica.cpp"
+#include "Compiler.h"
+#include "OutputHandler.h"
 #include <iostream>
-int main()
-{
-    string input_file_path = "../../../input.txt";
-    string rules_file_path = "../../../lexical rules.txt";
-    unordered_map<string, string> symbol_table;
-    lexical_analyzer lex(rules_file_path, input_file_path, &symbol_table);
-    while (true)
-    {
-        string token = lex.next_token();
-        if (token == "%%")
-        {
-            break;
-        }
-        if (token == "whitespace")
-        {
-            continue;
-        }
-        cout << token << endl;
-    }
+#include <vector>
+#include "Predictive_Parser/include/FirstFollowGen.h"
+#include "Predictive_Parser/include/Left_Factoring.h"
+using namespace std;
+
+int main() {
+    string rules_file_path = "../report input/lexical rules.txt";
+    string grammar_file_path = "../report input/Grammar.txt";
+    string input_file_path = "../report input/input.txt";
+    Compiler compiler(rules_file_path, grammar_file_path, input_file_path);
+    compiler.parse_input();
+    compiler.remaining_input();
     return 0;
 }

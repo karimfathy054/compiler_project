@@ -1,0 +1,7 @@
+int x;
+float y;int z;
+
+while ( y != z) {
+    float yyyeww21;
+}
+yyy_eww21 = x* y;
