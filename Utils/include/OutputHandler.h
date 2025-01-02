@@ -3,7 +3,7 @@
 #include "MarkdownTable.h"
 #include <iostream>
 #include <stack>
-#include "Predictive_Parser/include/Symbol.h"
+#include "../Predictive_Parser/include/Symbol.h"
 #include <unordered_set>
 
 class OutputHandler {
