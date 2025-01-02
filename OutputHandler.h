@@ -9,8 +9,8 @@
 class OutputHandler {
     public:
         OutputHandler();
-        std::string first_follow_filename = "../output_first_follow.md"; 
-        std::string output_table_filename = "../output_table.md";
+        std::string first_follow_filename = "../Results/output_first_follow.md"; 
+        std::string output_table_filename = "../Results/output_table.md";
         MarkdownTable first_follow_table = MarkdownTable({"Symbol", "First", "Follow"});
         MarkdownTable output_table = MarkdownTable({"Stack", "Curr Input Token", "Action"});
         void add_row_to_output_table(std::stack<Symbol *> st, std::string token, std::string action);
