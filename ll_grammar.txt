@@ -1,5 +1,3 @@
- # S ::= R T
- # R ::= s U R b | \L
- # U ::= u U | \L
- # V ::= v V | \L
- # T ::= V t T | \L
+# B::= 'l' 'l' 
+#C ::= a | b                
+#A ::= B | C A

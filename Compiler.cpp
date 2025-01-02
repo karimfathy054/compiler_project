@@ -37,13 +37,26 @@ void Compiler::read_grammar() {
     grammar_reader.displayProductions();
 
     LL_Grammar ll_grammar(productions);
-    productions = ll_grammar.getProductions();
-    ll_grammar.displayProductions();
 
-    symbols = ll_grammar.getSymbols();
+    productions = ll_grammar.getProductions();
+
+    cout << "After recursion and sub\n";
+    display_productions();
+
+    Left_Factoring left_factoring(productions);
+
+    left_factoring.leftFactor();
+
+    productions = left_factoring.getNewProductions();
+
+    cout << "+++++++++++++++++++++++++++++++++++++++++++\n";
+    cout << "After left factoring\n";
+    display_productions();
+
+    symbols = left_factoring.getSymbols();
     starting_symbol = grammar_reader.getStartSymbol();
     
-    non_terminal_symbols = ll_grammar.getNonTerminalSymbols();
+    non_terminal_symbols = left_factoring.getNonTerminalSymbols();
 }
 
 
@@ -80,7 +93,7 @@ string Compiler::next_token_wrapper()
     do
     {
         token = lexical_analyzer.next_token();
-    } while (token == "whitespace");
+    } while (token == "whitespace" || token == "");
     return token;
 }
 
@@ -111,14 +124,15 @@ void Compiler::parse_input() {
             }
             else
             {
-                row_action = "Error: token " + top->getName() + " is added to input";
+                row_action = "Error: token \'" + top->getName() + "\' is added to input";
+                st.pop();
             }
         }
         else
         {
             TableEntry* entry = table[top][token];
             // check if entry is null or not
-            if (entry->getProduction() == nullptr && !entry->getIsSync())
+            if (entry == nullptr)
             {
                 row_action =  "Error: token mismatch ( skipping token " + token + " )";
                 token = next_token_wrapper();
@@ -132,9 +146,13 @@ void Compiler::parse_input() {
             {
                 st.pop();
                 vector<Symbol *> rhs = entry->getProduction()->getRhs();
-                row_action = entry->getProduction()->getLhs()->getName() + " -> " + get_string_from_vector(rhs);
 
-                if(rhs[0]->getName() == "\\L") continue;
+                if(rhs[0]->getName() == "\\L") {
+                    row_action = entry->getProduction()->getLhs()->getName() + " -> " + "\\L";
+                    outputHandler.add_row_to_output_table(row_stack, row_token, row_action);
+                    continue;
+                }
+                row_action = entry->getProduction()->getLhs()->getName() + " -> " + get_string_from_vector(rhs);
 
                 for (int i = rhs.size() - 1; i >= 0; i--)
                 {
