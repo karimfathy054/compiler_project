@@ -1,7 +1,7 @@
-#include "Compiler.h"
+#include "include/Compiler.h"
 #include <iostream>
 #include "include/FirstFollowGen.h"
-#include "OutputHandler.h"
+#include "include/OutputHandler.h"
 
 using namespace std;
 

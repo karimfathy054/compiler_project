@@ -1,5 +1,0 @@
-name: ab
-id: (a|b|c)*ab
-test: (a|b)*ab
-{ boolean }
-[ ; , \(]
