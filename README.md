@@ -4,7 +4,7 @@ This project is a compiler generator implemented in C++. It is divided into two 
 
 ---
 
-## 📋 Features
+## Features
 
 ### **Phase 1: Lexical Analysis**
 - **Input:** Lexical rules.
@@ -35,7 +35,7 @@ This project is a compiler generator implemented in C++. It is divided into two 
 
 ---
 
-## 🛠️ Usage
+## Usage
 
 1. **Define Rules:**
    - Specify lexical rules for the tokens.
@@ -49,7 +49,7 @@ This project is a compiler generator implemented in C++. It is divided into two 
 
 ---
 
-## 📚 How It Works
+## How It Works
 - **Lexical Analysis Phase:**
   The lexer converts the input file into a series of tokens while identifying and recovering from errors, ensuring robust processing.
 
@@ -58,7 +58,7 @@ This project is a compiler generator implemented in C++. It is divided into two 
 
 ---
 
-## 👥 Team Members
+## Team Members
 This project was developed by:
 - **Karim Fathy**
 - **Omar Tarek**
